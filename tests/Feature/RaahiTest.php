@@ -144,8 +144,8 @@ test('dashboard groups filter returns only group-invited trips where user is par
     $trip1 = Trip::create([
         'name' => 'My Creator Trip',
         'destination' => 'Destination A',
-        'start_date' => now()->addDays(2),
-        'end_date' => now()->addDays(5),
+        'start_date' => now()->addDays(20),
+        'end_date' => now()->addDays(25),
         'creator_id' => $user->id,
     ]);
     $trip1->users()->attach($user->id, ['role' => 'organizer']);

@@ -39,40 +39,65 @@ new class extends Component
 }; ?>
 
 <section>
-    <header>
-        <h2 class="text-lg font-bold text-text-main">
-            {{ __('Update Password') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-text-muted">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
-        </p>
+    <header class="flex items-center space-x-3 pb-4 border-b border-border-light">
+        <div class="w-10 h-10 rounded-full bg-brand-neutral/5 flex items-center justify-center text-brand-neutral">
+            <i class="ph-duotone ph-key text-2xl"></i>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold text-text-main">
+                {{ __('Update Password') }}
+            </h2>
+            <p class="text-xs text-text-muted mt-0.5">
+                {{ __('Ensure your account is using a long, random password to stay secure.') }}
+            </p>
+        </div>
     </header>
 
-    <form wire:submit="updatePassword" class="mt-6 space-y-6">
+    <form wire:submit="updatePassword" class="mt-6 space-y-5">
         <div>
             <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input wire:model="current_password" id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->get('current_password')" class="mt-2" />
+            <div class="relative mt-1">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted/60">
+                    <i class="ph ph-lock text-lg"></i>
+                </div>
+                <x-text-input wire:model="current_password" id="update_password_current_password" name="current_password" type="password" class="block w-full pl-10" autocomplete="current-password" />
+            </div>
+            <x-input-error :messages="$errors->get('current_password')" class="mt-1" />
         </div>
 
         <div>
             <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input wire:model="password" id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <div class="relative mt-1">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted/60">
+                    <i class="ph ph-lock-key text-lg"></i>
+                </div>
+                <x-text-input wire:model="password" id="update_password_password" name="password" type="password" class="block w-full pl-10" autocomplete="new-password" />
+            </div>
+            <x-input-error :messages="$errors->get('password')" class="mt-1" />
         </div>
 
         <div>
             <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input wire:model="password_confirmation" id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+            <div class="relative mt-1">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted/60">
+                    <i class="ph ph-lock-key text-lg"></i>
+                </div>
+                <x-text-input wire:model="password_confirmation" id="update_password_password_confirmation" name="password_confirmation" type="password" class="block w-full pl-10" autocomplete="new-password" />
+            </div>
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div class="flex items-center gap-4 pt-2">
+            <x-primary-button class="px-6 py-2.5 text-xs font-bold uppercase tracking-wider">
+                <span class="flex items-center gap-1">
+                    <i class="ph ph-floppy-disk text-sm"></i>
+                    <span>{{ __('Save') }}</span>
+                </span>
+            </x-primary-button>
 
-            <x-action-message class="me-3" on="password-updated">
-                {{ __('Saved.') }}
+            <x-action-message class="text-xs font-semibold text-emerald-800 flex items-center gap-1" on="password-updated">
+                <i class="ph ph-check-circle"></i>
+                <span>{{ __('Saved.') }}</span>
             </x-action-message>
         </div>
     </form>

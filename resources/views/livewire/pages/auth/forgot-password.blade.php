@@ -37,25 +37,42 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <div class="mb-4 text-sm text-text-muted">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="mb-6 text-center">
+        <h2 class="font-serif-display font-bold text-2xl text-text-main">Reset Password</h2>
+        <p class="text-xs text-text-muted mt-1.5 font-medium leading-relaxed">
+            Forgot your password? No problem. Just let us know your email address and we will mail you a link to choose a new one.
+        </p>
     </div>
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form wire:submit="sendPasswordResetLink">
+    <form wire:submit="sendPasswordResetLink" class="space-y-5">
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-input-label for="email" :value="__('Email Address')" />
+            <div class="relative mt-1">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted/60">
+                    <i class="ph ph-envelope text-lg"></i>
+                </div>
+                <x-text-input wire:model="email" id="email" class="block w-full pl-10" type="email" name="email" required autofocus />
+            </div>
+            <x-input-error :messages="$errors->get('email')" class="mt-1" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
+        <div class="pt-2">
+            <x-primary-button class="w-full justify-center py-3 text-xs uppercase tracking-wider font-bold">
+                {{ __('Email Reset Link') }}
             </x-primary-button>
+        </div>
+
+        <div class="text-center pt-2">
+            <p class="text-xs text-text-muted">
+                Remember your password? 
+                <a href="{{ route('login') }}" wire:navigate class="font-bold text-brand-neutral hover:underline">
+                    Sign in
+                </a>
+            </p>
         </div>
     </form>
 </div>

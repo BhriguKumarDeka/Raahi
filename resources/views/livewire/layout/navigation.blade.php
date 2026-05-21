@@ -72,10 +72,7 @@ new class extends Component
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="font-display font-bold text-xl tracking-tight text-text-main flex items-center space-x-2" wire:navigate>
-                        <svg class="h-6 w-6 stroke-2 stroke-current" fill="none" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
+                        <i class="ph-duotone ph-map-pin text-brand-neutral text-2xl"></i>
                         <span>Raahi</span>
                     </a>
                 </div>
@@ -108,9 +105,7 @@ new class extends Component
             <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-3">
                 <!-- New Trip Button -->
                 <a href="{{ route('dashboard', ['create' => 1]) }}" class="inline-flex items-center px-4 py-2 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-bold rounded-xl transition duration-150 ease-in-out shadow-none hover:scale-[1.02] mr-1" wire:navigate>
-                    <svg class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                    </svg>
+                    <i class="ph-bold ph-plus mr-1"></i>
                     <span>New Trip</span>
                 </a>
 
@@ -119,9 +114,7 @@ new class extends Component
                     <x-dropdown align="right" width="w-80" contentClasses="py-2 bg-bg-primary border border-border-light rounded-2xl shadow-xl">
                         <x-slot name="trigger">
                             <button class="relative p-2 text-text-muted hover:text-text-main hover:bg-bg-secondary rounded-full transition duration-150 ease-in-out focus:outline-none border border-border-light bg-bg-primary">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
+                                <i class="ph ph-bell text-lg block"></i>
                                 @php
                                     $invitations = $this->getInvitations();
                                     $inviteCount = $invitations->count();
@@ -159,9 +152,7 @@ new class extends Component
                                             <div>
                                                 <h4 class="text-sm font-bold text-text-main">{{ $invite->trip->name }}</h4>
                                                 <p class="text-[11px] text-text-muted flex items-center mt-0.5">
-                                                    <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                    </svg>
+                                                    <i class="ph ph-map-pin mr-1"></i>
                                                     {{ $invite->trip->destination }}
                                                 </p>
                                             </div>
@@ -187,10 +178,8 @@ new class extends Component
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-1.5 border border-border-card text-sm font-medium rounded-full text-text-main bg-bg-primary hover:shadow-sm focus:outline-none transition duration-150 ease-in-out">
-                            <div class="flex items-center space-x-2">
-                                <svg class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
+                             <div class="flex items-center space-x-2">
+                                <i class="ph ph-list text-base text-text-muted"></i>
                                 <div class="h-6 w-6 rounded-full bg-bg-secondary flex items-center justify-center font-bold text-xs uppercase border border-border-light" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name[0]" x-on:profile-updated.window="name = $event.detail.name"></div>
                             </div>
                         </button>
@@ -218,10 +207,7 @@ new class extends Component
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-text-muted hover:text-text-main hover:bg-bg-secondary focus:outline-none transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <i class="ph text-2xl block" :class="open ? 'ph-x' : 'ph-list'"></i>
                 </button>
             </div>
         </div>

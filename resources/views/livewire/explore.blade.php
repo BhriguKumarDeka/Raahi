@@ -164,21 +164,19 @@ $hasRecommendationMatch = function ($tags) {
 
 ?>
 
-<div class="py-12 bg-bg-secondary min-h-screen text-text-main font-sans">
+<div class="py-12 bg-bg-secondary min-h-screen text-text-main font-sans-display">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 pb-4">
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight font-display text-text-main">Explore Curated Trips</h1>
-                <p class="text-text-muted text-sm mt-1">Discover popular destinations matching your profile and clone them with one click.</p>
+                <h1 class="text-3xl font-extrabold tracking-tight font-serif-display text-text-main">Explore Curated Trips</h1>
+                <p class="text-text-muted text-xs mt-1.5 font-medium">Discover popular destinations matching your profile and clone them with one click.</p>
             </div>
             
             <!-- Search bar -->
             <div class="relative w-full md:w-80">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted">
+                    <i class="ph ph-magnifying-glass"></i>
                 </div>
                 <input type="text" 
                        wire:model.live.debounce.300ms="searchQuery" 
@@ -203,12 +201,10 @@ $hasRecommendationMatch = function ($tags) {
 
         <!-- Destinations Grid -->
         @if (empty($this->filteredDestinations))
-            <div class="bg-bg-primary border border-border-light rounded-2xl p-16 text-center shadow-none col-span-2">
-                <svg class="mx-auto h-12 w-12 text-text-muted stroke-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+            <div class="bg-bg-primary border border-border-light rounded-2xl p-16 text-center shadow-none col-span-2 space-y-3">
+                <i class="ph ph-magnifying-glass text-4xl text-text-muted"></i>
                 <h3 class="mt-4 text-lg font-bold">No destinations found</h3>
-                <p class="mt-1 text-sm text-text-muted">Try refining your search query or choosing another style filter.</p>
+                <p class="mt-1 text-xs text-text-muted">Try refining your search query or choosing another style filter.</p>
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
@@ -229,10 +225,8 @@ $hasRecommendationMatch = function ($tags) {
                                 </div>
 
                                 @if($this->hasRecommendationMatch($dest['tags']))
-                                    <div class="absolute top-4 right-4 bg-green-500 border border-green-600 text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full shadow-sm flex items-center space-x-1">
-                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                        </svg>
+                                    <div class="absolute top-4 right-4 bg-emerald-700/90 border border-emerald-800 text-bg-primary text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full shadow-sm flex items-center space-x-1">
+                                        <i class="ph ph-seal-check text-xs"></i>
                                         <span>Recommended</span>
                                     </div>
                                 @endif
@@ -246,8 +240,8 @@ $hasRecommendationMatch = function ($tags) {
                                         <h3 class="font-bold text-xl mt-1">{{ $dest['name'] }}</h3>
                                     </div>
                                     <div class="text-right">
-                                        <span class="text-xs text-text-muted block">Est. Budget</span>
-                                        <span class="font-extrabold text-lg text-text-main">${{ number_format($dest['budget'], 0) }}</span>
+                                        <span class="text-[10px] text-text-muted block">Est. Budget</span>
+                                        <span class="font-extrabold text-lg text-text-main">₹{{ number_format($dest['budget'], 0) }}</span>
                                     </div>
                                 </div>
                                 <p class="text-sm text-text-muted mt-3 leading-relaxed">{{ $dest['description'] }}</p>
@@ -261,10 +255,8 @@ $hasRecommendationMatch = function ($tags) {
                                 View Itinerary
                             </button>
                             <button wire:click="cloneTrip('{{ $key }}')"
-                                    class="flex-1 px-4 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M8 7H4M18 7h2m-6 4h3m-3 4h3" />
-                                </svg>
+                                    class="flex-1 px-4 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1.5">
+                                <i class="ph ph-copy text-sm"></i>
                                 <span>Clone to Workspace</span>
                             </button>
                         </div>
@@ -288,10 +280,8 @@ $hasRecommendationMatch = function ($tags) {
                         <h2 class="text-xl font-bold text-text-main mt-0.5">{{ $modalDest['name'] }} Itinerary</h2>
                     </div>
                     <button wire:click="$set('showPreviewModal', false)"
-                            class="text-text-muted hover:text-text-main transition p-1">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                            class="text-text-muted hover:text-text-main transition p-1.5">
+                        <i class="ph ph-x text-lg"></i>
                     </button>
                 </div>
 
@@ -326,10 +316,8 @@ $hasRecommendationMatch = function ($tags) {
                         Close
                     </button>
                     <button wire:click="cloneTrip('{{ $previewKey }}')"
-                            class="px-5 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-semibold rounded-xl transition flex items-center space-x-1">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M8 7H4M18 7h2m-6 4h3m-3 4h3" />
-                        </svg>
+                            class="px-5 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-semibold rounded-xl transition flex items-center space-x-1.5">
+                        <i class="ph ph-copy text-sm"></i>
                         <span>Clone Itinerary</span>
                     </button>
                 </div>

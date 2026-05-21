@@ -13,9 +13,6 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        
-        <!-- Motion.dev Animation Library -->
-        <script src="https://cdn.jsdelivr.net/npm/motion@11.11.17/dist/motion.js"></script>
 
         <style>
             /* Custom Scrollbar */
@@ -654,9 +651,14 @@
         <!-- Custom JS code for Carousel and Motion.dev animations -->
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                const { animate, scroll, inView } = Motion;
+                const initAnimations = () => {
+                    if (!window.Motion) {
+                        setTimeout(initAnimations, 50);
+                        return;
+                    }
+                    const { animate, scroll, inView } = window.Motion;
 
-                // 1. Motion.dev Reveals & Glide Transitions (UX Interaction Design)
+                    // 1. Motion.dev Reveals & Glide Transitions (UX Interaction Design)
                 // Hero elements reveal
                 animate('.hero-title', { opacity: [0, 1], y: [30, 0] }, { duration: 0.8, easing: 'ease-out' });
                 animate('.hero-desc', { opacity: [0, 1], y: [20, 0] }, { duration: 0.8, delay: 0.2, easing: 'ease-out' });
@@ -763,6 +765,8 @@
                         updateStepUI();
                     });
                 }
+                };
+                initAnimations();
             });
         </script>
     </body>

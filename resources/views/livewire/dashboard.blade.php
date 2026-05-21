@@ -103,6 +103,9 @@ $stats = computed(function () {
             'invites' => 0,
             'completed' => 0,
             'groups' => 0,
+            'daysToNextTrip' => null,
+            'nextTripName' => null,
+            'pendingDecisions' => 0,
         ];
     }
 
@@ -117,11 +120,31 @@ $stats = computed(function () {
         ->where('status', 'pending')
         ->count();
 
+    $nextTrip = $allTrips->filter(fn($t) => $t->start_date->gte($today))->sortBy('start_date')->first();
+    $daysToNextTrip = $nextTrip ? $today->diffInDays($nextTrip->start_date) : null;
+    $nextTripName = $nextTrip ? $nextTrip->name : null;
+
+    // Calculate pending decisions across active trips
+    $pendingDecisions = 0;
+    $activeTrips = $allTrips->filter(fn($t) => $t->end_date->gte($today));
+    foreach ($activeTrips as $trip) {
+        $tripPolls = $trip->polls()->where('is_locked', false)->get();
+        foreach ($tripPolls as $poll) {
+            $hasVoted = $poll->votes()->where('user_id', $user->id)->exists();
+            if (!$hasVoted) {
+                $pendingDecisions++;
+            }
+        }
+    }
+
     return [
         'upcoming' => $upcoming,
         'invites' => $invites,
         'completed' => $completed,
         'groups' => $groups,
+        'daysToNextTrip' => $daysToNextTrip,
+        'nextTripName' => $nextTripName,
+        'pendingDecisions' => $pendingDecisions,
     ];
 });
 
@@ -179,12 +202,9 @@ $getTripImage = function ($destination) {
                 <p class="text-text-muted text-sm mt-2 leading-relaxed">Plan itineraries, collaborate with your group, and make every trip unforgettable.</p>
             </div>
             
-            <!-- Search bar -->
             <div class="relative w-full md:w-80">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                    <i class="ph ph-magnifying-glass text-text-muted text-sm"></i>
                 </div>
                 <input type="text" 
                        wire:model.live.debounce.300ms="searchQuery" 
@@ -200,77 +220,78 @@ $getTripImage = function ($destination) {
             </div>
         @endif
 
-        <!-- "At a glance" Stats Banner -->
-        <div class="bg-bg-primary border border-border-light rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row justify-between items-stretch gap-6 shadow-none">
-            <!-- Left Section: Header label -->
-            <div class="lg:w-1/5 flex items-center border-b lg:border-b-0 lg:border-r border-border-light pb-4 lg:pb-0 lg:pr-6">
-                <span class="font-serif-display italic text-2xl text-brand-neutral">At a glance</span>
+        <!-- "At a glance" Narrative Banner -->
+        <div class="bg-bg-primary border border-border-light rounded-3xl p-6 md:p-8 flex flex-col lg:flex-row justify-between items-center gap-6 shadow-[0_4px_20px_rgba(26,59,43,0.02)]">
+            <!-- Left Section: Header label & Big message -->
+            <div class="w-full lg:w-1/2 space-y-2">
+                <span class="font-serif-display italic text-brand-neutral text-xl block">At a glance</span>
+                <h3 class="text-2xl font-bold tracking-tight font-sans-display text-text-main">
+                    @if ($this->stats['daysToNextTrip'] !== null)
+                        Your next adventure, <span class="italic text-brand-neutral font-serif-display font-medium">{{ $this->stats['nextTripName'] }}</span>, starts in <span class="text-brand-neutral font-extrabold">{{ $this->stats['daysToNextTrip'] }} days</span>!
+                    @else
+                        Where will you and your friends explore next?
+                    @endif
+                </h3>
+                <p class="text-text-muted text-xs">
+                    @if ($this->stats['pendingDecisions'] > 0)
+                        There are <strong class="text-brand-neutral font-semibold">{{ $this->stats['pendingDecisions'] }} pending group decisions</strong> awaiting your response.
+                    @else
+                        All collaborative decisions are currently resolved.
+                    @endif
+                </p>
             </div>
 
-            <!-- Middle Section: Stats Grid -->
-            <div class="flex-grow grid grid-cols-2 sm:grid-cols-4 gap-4 items-center px-2">
+            <!-- Middle/Right Section: Narrative Buttons Grid -->
+            <div class="w-full lg:w-1/2 grid grid-cols-2 gap-4">
                 <button wire:click="$set('filterStatus', 'Upcoming')" 
-                        class="flex items-start space-x-3 text-left focus:outline-none group/stat cursor-pointer w-full p-2 rounded-xl transition duration-150 {{ $filterStatus === 'Upcoming' ? 'bg-bg-secondary border border-border-card' : 'border border-transparent hover:bg-bg-secondary/50' }}">
-                    <!-- Icon -->
-                    <div class="p-2.5 bg-brand-neutral/5 rounded-xl text-brand-neutral group-hover/stat:bg-brand-neutral group-hover/stat:text-bg-primary transition duration-150 shrink-0">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        class="flex items-center space-x-3 text-left focus:outline-none p-3.5 rounded-2xl border transition duration-200 cursor-pointer {{ $filterStatus === 'Upcoming' ? 'bg-bg-secondary border-border-card' : 'bg-bg-primary/50 border-border-light hover:bg-bg-secondary/40' }}">
+                    <div class="p-2 bg-brand-neutral/5 rounded-xl text-brand-neutral shrink-0">
+                        <i class="ph-duotone ph-calendar text-lg block"></i>
                     </div>
                     <div>
-                        <span class="text-2xl font-extrabold text-brand-neutral font-sans-display leading-none block">{{ $this->stats['upcoming'] }}</span>
-                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block mt-1 group-hover/stat:text-text-main transition duration-150">Upcoming</span>
+                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Upcoming</span>
+                        <span class="text-xs font-bold text-text-main leading-tight block mt-0.5">{{ $this->stats['upcoming'] }} {{ Str::plural('Trip', $this->stats['upcoming']) }}</span>
                     </div>
                 </button>
-
+ 
                 <button wire:click="$set('filterStatus', 'Invites')" 
-                        class="flex items-start space-x-3 text-left focus:outline-none group/stat cursor-pointer w-full p-2 rounded-xl transition duration-150 {{ $filterStatus === 'Invites' ? 'bg-bg-secondary border border-border-card' : 'border border-transparent hover:bg-bg-secondary/50' }}">
-                    <!-- Icon -->
-                    <div class="p-2.5 bg-brand-neutral/5 rounded-xl text-brand-neutral group-hover/stat:bg-brand-neutral group-hover/stat:text-bg-primary transition duration-150 shrink-0">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
+                        class="flex items-center space-x-3 text-left focus:outline-none p-3.5 rounded-2xl border transition duration-200 cursor-pointer {{ $filterStatus === 'Invites' ? 'bg-bg-secondary border-border-card' : 'bg-bg-primary/50 border-border-light hover:bg-bg-secondary/40' }}">
+                    <div class="p-2 bg-brand-neutral/5 rounded-xl text-brand-neutral shrink-0">
+                        <i class="ph-duotone ph-envelope-open text-lg block"></i>
                     </div>
                     <div>
-                        <span class="text-2xl font-extrabold text-brand-neutral font-sans-display leading-none block">{{ $this->stats['invites'] }}</span>
-                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block mt-1 group-hover/stat:text-text-main transition duration-150">Invites</span>
+                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Invitations</span>
+                        <span class="text-xs font-bold text-text-main leading-tight block mt-0.5">
+                            @if ($this->stats['invites'] > 0)
+                                {{ $this->stats['invites'] }} pending
+                            @else
+                                None pending
+                            @endif
+                        </span>
                     </div>
                 </button>
-
+ 
                 <button wire:click="$set('filterStatus', 'Completed')" 
-                        class="flex items-start space-x-3 text-left focus:outline-none group/stat cursor-pointer w-full p-2 rounded-xl transition duration-150 {{ $filterStatus === 'Completed' ? 'bg-bg-secondary border border-border-card' : 'border border-transparent hover:bg-bg-secondary/50' }}">
-                    <!-- Icon -->
-                    <div class="p-2.5 bg-brand-neutral/5 rounded-xl text-brand-neutral group-hover/stat:bg-brand-neutral group-hover/stat:text-bg-primary transition duration-150 shrink-0">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        class="flex items-center space-x-3 text-left focus:outline-none p-3.5 rounded-2xl border transition duration-200 cursor-pointer {{ $filterStatus === 'Completed' ? 'bg-bg-secondary border-border-card' : 'bg-bg-primary/50 border-border-light hover:bg-bg-secondary/40' }}">
+                    <div class="p-2 bg-brand-neutral/5 rounded-xl text-brand-neutral shrink-0">
+                        <i class="ph-duotone ph-clock text-lg block"></i>
                     </div>
                     <div>
-                        <span class="text-2xl font-extrabold text-brand-neutral font-sans-display leading-none block">{{ $this->stats['completed'] }}</span>
-                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block mt-1 group-hover/stat:text-text-main transition duration-150">Completed</span>
+                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Completed</span>
+                        <span class="text-xs font-bold text-text-main leading-tight block mt-0.5">{{ $this->stats['completed'] }} past journeys</span>
                     </div>
                 </button>
-
+ 
                 <button wire:click="$set('filterStatus', 'Groups')" 
-                        class="flex items-start space-x-3 text-left focus:outline-none group/stat cursor-pointer w-full p-2 rounded-xl transition duration-150 {{ $filterStatus === 'Groups' ? 'bg-bg-secondary border border-border-card' : 'border border-transparent hover:bg-bg-secondary/50' }}">
-                    <!-- Icon -->
-                    <div class="p-2.5 bg-brand-neutral/5 rounded-xl text-brand-neutral group-hover/stat:bg-brand-neutral group-hover/stat:text-bg-primary transition duration-150 shrink-0">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
+                        class="flex items-center space-x-3 text-left focus:outline-none p-3.5 rounded-2xl border transition duration-200 cursor-pointer {{ $filterStatus === 'Groups' ? 'bg-bg-secondary border-border-card' : 'bg-bg-primary/50 border-border-light hover:bg-bg-secondary/40' }}">
+                    <div class="p-2 bg-brand-neutral/5 rounded-xl text-brand-neutral shrink-0">
+                        <i class="ph-duotone ph-users text-lg block"></i>
                     </div>
                     <div>
-                        <span class="text-2xl font-extrabold text-brand-neutral font-sans-display leading-none block">{{ $this->stats['groups'] }}</span>
-                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block mt-1 group-hover/stat:text-text-main transition duration-150">Groups</span>
+                        <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Group Trips</span>
+                        <span class="text-xs font-bold text-text-main leading-tight block mt-0.5">{{ $this->stats['groups'] }} shared spaces</span>
                     </div>
                 </button>
-            </div>
-
-            <!-- Right Section: Quote -->
-            <div class="lg:w-1/3 flex items-center border-t lg:border-t-0 lg:border-l border-border-light pt-4 lg:pt-0 lg:pl-6 text-text-muted">
-                <blockquote class="italic text-xs font-serif-display leading-relaxed border-l-2 border-brand-neutral pl-3 py-1">
-                    "Travel is the only thing you buy that makes you richer."
-                </blockquote>
             </div>
         </div>
 
@@ -278,9 +299,7 @@ $getTripImage = function ($destination) {
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border-light pb-4">
             <div class="flex items-center space-x-2">
                 <h2 class="text-xl font-bold font-sans-display text-text-main">Your Trips</h2>
-                <svg class="h-5 w-5 text-text-muted stroke-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+                <i class="ph ph-airplane-takeoff text-lg text-text-muted"></i>
             </div>
 
             <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
@@ -304,16 +323,12 @@ $getTripImage = function ($destination) {
                     <button wire:click="$set('viewMode', 'grid')"
                             class="p-1.5 rounded-lg transition-all {{ $viewMode === 'grid' ? 'bg-brand-neutral text-bg-primary shadow-none' : 'text-text-muted hover:text-text-main' }}"
                             title="Grid View">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
+                        <i class="ph-bold ph-squares-four text-sm block"></i>
                     </button>
                     <button wire:click="$set('viewMode', 'list')"
                             class="p-1.5 rounded-lg transition-all {{ $viewMode === 'list' ? 'bg-brand-neutral text-bg-primary shadow-none' : 'text-text-muted hover:text-text-main' }}"
                             title="List View">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                        <i class="ph-bold ph-list-bullets text-sm block"></i>
                     </button>
                 </div>
             </div>
@@ -323,9 +338,7 @@ $getTripImage = function ($destination) {
         @if ($filterStatus === 'Invites')
             @if ($this->pendingInvitations->isEmpty())
                 <div class="bg-bg-primary border border-border-light rounded-2xl p-16 text-center shadow-none w-full">
-                    <svg class="mx-auto h-12 w-12 text-text-muted stroke-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
+                    <i class="ph ph-envelope-open text-5xl text-text-muted block mx-auto"></i>
                     <h3 class="mt-4 text-lg font-bold">No pending invitations</h3>
                     <p class="mt-1 text-sm text-text-muted">You don't have any pending invites to join other trips.</p>
                 </div>
@@ -365,9 +378,7 @@ $getTripImage = function ($destination) {
         @else
             @if ($this->trips->isEmpty())
                 <div class="bg-bg-primary border border-border-light rounded-2xl p-16 text-center shadow-none w-full">
-                    <svg class="mx-auto h-12 w-12 text-text-muted stroke-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                    </svg>
+                    <i class="ph ph-compass text-5xl text-text-muted block mx-auto"></i>
                     <h3 class="mt-4 text-lg font-bold">No trips found</h3>
                     <p class="mt-1 text-sm text-text-muted">Create a new trip or modify your filters/search to get started.</p>
                     <button type="button" 
@@ -407,9 +418,7 @@ $getTripImage = function ($destination) {
                                 
                                 <div class="flex items-center text-xs text-text-muted mt-3 space-x-4">
                                     <div class="flex items-center space-x-1">
-                                        <svg class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
+                                        <i class="ph ph-calendar text-sm text-text-muted"></i>
                                         <span>{{ $trip->start_date->format('M d, Y') }} - {{ $trip->end_date->format('M d, Y') }}</span>
                                     </div>
                                 </div>
@@ -454,9 +463,7 @@ $getTripImage = function ($destination) {
                                     <span class="text-[10px] text-brand-neutral font-bold uppercase tracking-wider">{{ $trip->destination }}</span>
                                     <h3 class="font-bold text-lg text-text-main leading-tight mt-0.5">{{ $trip->name }}</h3>
                                     <p class="text-xs text-text-muted flex items-center mt-1">
-                                        <svg class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
+                                        <i class="ph ph-calendar text-xs mr-1 text-text-muted"></i>
                                         {{ $trip->start_date->format('M d, Y') }} - {{ $trip->end_date->format('M d, Y') }}
                                     </p>
                                 </div>
@@ -492,9 +499,7 @@ $getTripImage = function ($destination) {
                                        class="px-4 py-2 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-none"
                                        wire:navigate>
                                         <span>Workspace</span>
-                                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                        </svg>
+                                        <i class="ph ph-arrow-right text-xs"></i>
                                     </a>
                                 </div>
                             </div>
@@ -515,9 +520,7 @@ $getTripImage = function ($destination) {
                     <button type="button" 
                             wire:click="$set('showCreateModal', false)"
                             class="text-text-muted hover:text-text-main transition">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <i class="ph ph-x text-lg"></i>
                     </button>
                 </div>
 

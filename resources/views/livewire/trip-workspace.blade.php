@@ -12,6 +12,16 @@ on(['trip-updated' => '$refresh']);
 
 mount(function (Trip $trip) {
     $this->trip = $trip;
+    if (empty($trip->cover_image_url)) {
+        $data = \App\Services\PexelsService::getTripImageData($trip->destination);
+        $trip->update([
+            'cover_image_url' => $data['url'],
+            'photographer_name' => $data['photographer'],
+            'photographer_url' => $data['photographer_url'],
+            'photo_url' => $data['photo_url'],
+        ]);
+        $this->trip = $trip->fresh();
+    }
 });
 
 $users = computed(function () {
@@ -25,20 +35,25 @@ $users = computed(function () {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Trip Header Atmospheric Banner -->
-        <div class="bg-bg-primary border border-border-light rounded-3xl p-6 md:p-8 mb-8 shadow-sm relative overflow-hidden"
+        @php
+            $headerImage = $trip->cover_image_url ?: \App\Services\PexelsService::getTripImage($trip->destination);
+        @endphp
+        <div class="relative border border-border-light rounded-3xl p-6 md:p-8 mb-8 shadow-sm overflow-hidden bg-brand-neutral bg-cover bg-center"
+             style="background-image: linear-gradient(to bottom, rgba(26, 59, 43, 0.4), rgba(26, 59, 43, 0.85)), url('{{ $headerImage }}');"
              x-init="if(window.Motion) { window.Motion.animate($el, { y: [15, 0], opacity: [0, 1] }, { duration: 0.5, delay: 0.1 }) }">
+            
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
                 <div>
-                    <span class="text-xs text-brand-neutral font-extrabold uppercase tracking-wider bg-brand-neutral/5 px-2.5 py-1 rounded-full">{{ $trip->destination }}</span>
-                    <h1 class="text-3.5xl font-extrabold tracking-tight mt-3 font-serif-display text-brand-neutral">{{ $trip->name }}</h1>
-                    <p class="text-text-muted text-sm mt-2 leading-relaxed max-w-2xl">{{ $trip->description ?: 'Explore, plan, and budget this journey together.' }}</p>
+                    <span class="text-xs text-white font-extrabold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">{{ $trip->destination }}</span>
+                    <h1 class="text-3.5xl font-extrabold tracking-tight mt-3 font-serif-display text-white">{{ $trip->name }}</h1>
+                    <p class="text-white/85 text-sm mt-2 leading-relaxed max-w-2xl">{{ $trip->description ?: 'Explore, plan, and budget this journey together.' }}</p>
                 </div>
-                <div class="bg-bg-secondary border border-border-card px-5 py-4 rounded-2xl text-center min-w-[160px] shadow-[0_4px_12px_rgba(26,59,43,0.02)]">
-                    <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider block">Time to Departure</span>
+                <div class="bg-white/10 backdrop-blur-md border border-white/25 px-5 py-4 rounded-2xl text-center min-w-[160px] shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+                    <span class="text-[10px] font-bold text-white/70 uppercase tracking-wider block">Time to Departure</span>
                     @php
                         $daysLeft = now()->startOfDay()->diffInDays($trip->start_date, false);
                     @endphp
-                    <span class="text-2xl font-extrabold tracking-tight text-brand-neutral block mt-1">
+                    <span class="text-2xl font-extrabold tracking-tight text-white block mt-1">
                         @if ($daysLeft > 0)
                             {{ $daysLeft }} {{ Str::plural('Day', $daysLeft) }}
                         @elseif ($daysLeft === 0)
@@ -51,28 +66,39 @@ $users = computed(function () {
             </div>
             
             <!-- Dates and details bar -->
-            <div class="flex flex-wrap items-center mt-6 pt-6 border-t border-border-light text-xs font-semibold text-text-muted gap-6 relative z-10">
+            <div class="flex flex-wrap items-center mt-6 pt-6 border-t border-white/20 text-xs font-semibold text-white/80 gap-6 relative z-10">
                 <div class="flex items-center space-x-2">
-                    <i class="ph-bold ph-calendar-blank text-base text-brand-neutral"></i>
+                    <i class="ph-bold ph-calendar-blank text-base text-white"></i>
                     <span>{{ $trip->start_date->format('M d, Y') }} - {{ $trip->end_date->format('M d, Y') }}</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <i class="ph-bold ph-wallet text-base text-brand-neutral"></i>
-                    <span>Budget limit: <strong class="text-text-main font-bold">₹{{ number_format($trip->budget_estimate, 0) }}</strong></span>
+                    <i class="ph-bold ph-wallet text-base text-white"></i>
+                    <span>Budget limit: <strong class="text-white font-bold">₹{{ number_format($trip->budget_estimate, 0) }}</strong></span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <i class="ph-bold ph-users-three text-base text-brand-neutral"></i>
+                    <i class="ph-bold ph-users-three text-base text-white"></i>
                     <span>{{ $this->users->count() }} travelers</span>
                 </div>
+                @if ($trip->photographer_name)
+                    <div class="flex items-center space-x-2 bg-white/10 px-2 py-0.5 rounded backdrop-blur-sm">
+                        <i class="ph-bold ph-camera text-base text-white"></i>
+                        <span>
+                            Photo by <a href="{{ $trip->photographer_url }}" target="_blank" class="underline hover:text-white font-bold">{{ $trip->photographer_name }}</a> on 
+                            <a href="{{ str_contains($trip->photographer_url, 'pexels') ? 'https://www.pexels.com' : 'https://unsplash.com' }}" target="_blank" class="underline hover:text-white font-bold">
+                                {{ str_contains($trip->photographer_url, 'pexels') ? 'Pexels' : 'Unsplash' }}
+                            </a>
+                        </span>
+                    </div>
+                @endif
                 <div class="flex -space-x-1.5 ml-auto">
                     @foreach($this->users->take(4) as $u)
-                        <div class="h-6 w-6 rounded-full bg-brand-neutral text-bg-primary border-2 border-bg-primary flex items-center justify-center font-bold text-[9px] uppercase"
+                        <div class="h-6 w-6 rounded-full bg-white text-brand-neutral border-2 border-brand-neutral/20 flex items-center justify-center font-bold text-[9px] uppercase"
                              title="{{ $u->name }} ({{ $trip->getUserRole($u) }})">
                             {{ $u->name[0] }}
                         </div>
                     @endforeach
                     @if($this->users->count() > 4)
-                        <div class="h-6 w-6 rounded-full bg-bg-secondary text-text-muted border-2 border-bg-primary flex items-center justify-center font-bold text-[9px]">
+                        <div class="h-6 w-6 rounded-full bg-white/20 text-white border-2 border-brand-neutral/20 flex items-center justify-center font-bold text-[9px] backdrop-blur-sm">
                             +{{ $this->users->count() - 4 }}
                         </div>
                     @endif

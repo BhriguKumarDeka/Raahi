@@ -170,23 +170,7 @@ $createTrip = function () {
 };
 
 $getTripImage = function ($destination) {
-    $dest = strtolower($destination);
-    if (str_contains($dest, 'bali')) {
-        return 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80';
-    } elseif (str_contains($dest, 'kyoto')) {
-        return 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80';
-    } elseif (str_contains($dest, 'patagonia')) {
-        return 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=600&q=80';
-    } elseif (str_contains($dest, 'paris')) {
-        return 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80';
-    } elseif (str_contains($dest, 'manali')) {
-        return 'https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?auto=format&fit=crop&w=600&q=80';
-    } elseif (str_contains($dest, 'assam')) {
-        return 'https://images.unsplash.com/photo-1582298538104-fc2c0c567793?auto=format&fit=crop&w=600&q=80';
-    } elseif (str_contains($dest, 'shillong')) {
-        return 'https://images.unsplash.com/photo-1588880331149-6ee5b291d3b7?auto=format&fit=crop&w=600&q=80';
-    }
-    return 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=600&q=80';
+    return \App\Services\PexelsService::getTripImage($destination);
 };
 
 ?>
@@ -407,7 +391,7 @@ $getTripImage = function ($destination) {
                            wire:navigate>
                             <!-- Cover Image -->
                             <div class="bg-bg-secondary h-44 w-full flex items-center justify-center border-b border-border-light relative overflow-hidden">
-                                <div class="absolute inset-0 bg-cover bg-center filter brightness-95 transition group-hover:scale-105 duration-300" style="background-image: url('{{ $this->getTripImage($trip->destination) }}')"></div>
+                                <div class="absolute inset-0 bg-cover bg-center filter brightness-95 transition group-hover:scale-105 duration-300" style="background-image: url('{{ $trip->cover_image_url ?: $this->getTripImage($trip->destination) }}')"></div>
                                 <div class="absolute top-3 left-3 bg-bg-primary/95 backdrop-blur-sm border border-border-light px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm text-text-main">
                                     {{ $status }}
                                 </div>
@@ -458,7 +442,7 @@ $getTripImage = function ($destination) {
                         @endphp
                         <div class="bg-bg-primary border border-border-light rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-sm transition">
                             <div class="flex items-center space-x-4">
-                                <div class="h-16 w-16 rounded-xl bg-cover bg-center shrink-0 border border-border-light" style="background-image: url('{{ $this->getTripImage($trip->destination) }}')"></div>
+                                <div class="h-16 w-16 rounded-xl bg-cover bg-center shrink-0 border border-border-light" style="background-image: url('{{ $trip->cover_image_url ?: $this->getTripImage($trip->destination) }}')"></div>
                                 <div>
                                     <span class="text-[10px] text-brand-neutral font-bold uppercase tracking-wider">{{ $trip->destination }}</span>
                                     <h3 class="font-bold text-lg text-text-main leading-tight mt-0.5">{{ $trip->name }}</h3>

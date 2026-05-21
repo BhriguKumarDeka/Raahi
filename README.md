@@ -18,6 +18,7 @@ Raahi organizes travel planning around collaborative trip workspaces. Users onbo
     *   **Discussion Boards**: Threaded comments to maintain conversation context.
     *   **Members & Roles**: Manage member access and invite participants via system invitations.
 *   **Curated Explorer**: Discover popular destinations (such as Bali, Kyoto, Patagonia, and Paris). View day-by-day itinerary previews and clone entire templates into active personal workspaces with a single click.
+*   **Dynamic Cover Images & Caching**: Integrates Pexels API to automatically populate trip cards and workspaces with stunning, context-specific landscape images. Implements a query-level caching strategy (successes cached forever, transient errors/rate-limits cached for 10 minutes) and model lifecycle hooks to persist images in database columns, preventing redundant outbound API requests.
 *   **Administration Panel**: A dedicated administrative dashboard to view global system stats, manage user access roles, and moderate trips.
 *   **Responsive Navigation**: Includes quick "+ New Trip" creation actions, a global Notification Bell dropdown with pending invitations, and user account management.
 
@@ -26,6 +27,7 @@ Raahi organizes travel planning around collaborative trip workspaces. Users onbo
 *   **Framework**: Laravel 13
 *   **Language**: PHP 8.5
 *   **Frontend Interactivity**: Livewire 3 (Volt functional API), Tailwind CSS v4, Alpine.js, Motion.dev
+*   **Media Provider**: Pexels API (with persistent cache layer)
 *   **Testing Suite**: Pest PHP
 
 ## Installation & Setup

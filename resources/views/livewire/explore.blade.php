@@ -13,7 +13,7 @@ state([
 ]);
 
 $destinations = computed(function () {
-    return [
+    $items = [
         'bali' => [
             'name' => 'Summer in Bali',
             'destination' => 'Bali, Indonesia',
@@ -82,6 +82,12 @@ $destinations = computed(function () {
             ],
         ],
     ];
+
+    foreach ($items as $key => $item) {
+        $items[$key]['image'] = \App\Services\PexelsService::getTripImage($item['destination'], $item['image']);
+    }
+
+    return $items;
 });
 
 $filteredDestinations = computed(function () {

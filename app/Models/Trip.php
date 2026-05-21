@@ -17,6 +17,10 @@ class Trip extends Model
         'description',
         'budget_estimate',
         'creator_id',
+        'cover_image_url',
+        'photographer_name',
+        'photographer_url',
+        'photo_url',
     ];
 
     protected $casts = [
@@ -24,6 +28,23 @@ class Trip extends Model
         'end_date' => 'date',
         'budget_estimate' => 'decimal:2',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function ($trip) {
+            if (($trip->isDirty('destination') || empty($trip->cover_image_url)) && !empty($trip->destination) && !$trip->isDirty('cover_image_url')) {
+                try {
+                    $data = \App\Services\PexelsService::getTripImageData($trip->destination);
+                    $trip->cover_image_url = $data['url'] ?? null;
+                    $trip->photographer_name = $data['photographer'] ?? null;
+                    $trip->photographer_url = $data['photographer_url'] ?? null;
+                    $trip->photo_url = $data['photo_url'] ?? null;
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Error setting cover image on trip save: ' . $e->getMessage());
+                }
+            }
+        });
+    }
 
     public function creator()
     {

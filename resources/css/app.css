@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+    --color-bg-primary: #fcfcf9;
+    --color-bg-secondary: #f4f4f0;
+    --color-text-main: #1c1d1a;
+    --color-text-muted: #5e605c;
+    --color-border-card: #e4e4df;
+    --color-border-light: #ecece7;
+    --color-brand-neutral: #1a3b2b;
+    --color-brand-hover: #122c1f;
+    --font-serif-display: "Playfair Display", serif;
+    --font-sans-display: "Plus Jakarta Sans", sans-serif;
+}

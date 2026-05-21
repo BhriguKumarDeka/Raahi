@@ -234,12 +234,18 @@ test('explore page search bar correctly filters destinations', function () {
     Livewire::actingAs($user)
         ->test('explore')
         ->set('searchQuery', 'Bali')
-        ->assertSee('Summer in Bali')
-        ->assertDontSee('Kyoto Cultural Discovery')
+        ->assertSeeHtml('>Summer in Bali</h3>')
+        ->assertDontSeeHtml('>Kyoto Cultural Discovery</h3>');
+
+    Livewire::actingAs($user)
+        ->test('explore')
         ->set('searchQuery', 'Kyoto')
-        ->assertSee('Kyoto Cultural Discovery')
-        ->assertDontSee('Summer in Bali')
+        ->assertSeeHtml('>Kyoto Cultural Discovery</h3>')
+        ->assertDontSeeHtml('>Summer in Bali</h3>');
+
+    Livewire::actingAs($user)
+        ->test('explore')
         ->set('searchQuery', 'Mountain')
-        ->assertSee('Patagonia Adventure')
-        ->assertDontSee('Paris Culture');
+        ->assertSeeHtml('>Patagonia Adventure &amp; Hiking</h3>')
+        ->assertDontSeeHtml('>Paris Culture &amp; Fine Dining</h3>');
 });

@@ -16,6 +16,14 @@ class Comment extends Model
         'content',
     ];
 
+    protected static function booted()
+    {
+        // Cascade delete: remove child replies when a parent comment is deleted
+        static::deleting(function ($comment) {
+            $comment->replies()->each(fn ($reply) => $reply->delete());
+        });
+    }
+
     public function trip()
     {
         return $this->belongsTo(Trip::class);

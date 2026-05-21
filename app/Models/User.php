@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password', 'is_admin', 'onboarded', 'profile_image', 'travel_style', 'budget_preference', 'activity_interests', 'preferred_destinations'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -33,6 +33,20 @@ class User extends Authenticatable
             'activity_interests' => 'array',
             'preferred_destinations' => 'array',
         ];
+    }
+
+    protected static function booted()
+    {
+        // Cascade cleanup when a user is deleted
+        static::deleting(function ($user) {
+            $user->votes()->delete();
+            $user->splits()->delete();
+            $user->invitations()->delete();
+            // Delete comments (replies cascade via Comment::booted)
+            \App\Models\Comment::where('user_id', $user->id)->each(fn($c) => $c->delete());
+            // Detach from all trips
+            $user->trips()->detach();
+        });
     }
 
     public function isSystemAdmin(): bool

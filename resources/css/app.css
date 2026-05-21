@@ -11,8 +11,10 @@
     --color-text-muted: #5e605c;
     --color-border-card: #e4e4df;
     --color-border-light: #ecece7;
-    --color-brand-neutral: #1a3b2b;
-    --color-brand-hover: #122c1f;
-    --font-serif-display: "Playfair Display", serif;
-    --font-sans-display: "Plus Jakarta Sans", sans-serif;
+    --color-brand-neutral: #0f5f46;
+    --color-brand-hover: #0a4734;
+    --font-serif-display: "Google Sans", serif;
+    --font-sans-display: "Google Sans", sans-serif;
+    --font-sans: "Google Sans", sans-serif;
+    --font-serif: "Google Sans", serif;
 }

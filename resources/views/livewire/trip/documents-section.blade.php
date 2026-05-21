@@ -20,6 +20,11 @@ $documents = computed(function () {
 });
 
 $uploadDocument = function () {
+    // Only organizer/co_planner can upload
+    if (!$this->trip->canEditItinerary(auth()->user())) {
+        abort(403);
+    }
+
     $this->validate([
         'document_file' => 'required|file|max:10240', // Max 10MB
     ]);
@@ -44,16 +49,15 @@ $uploadDocument = function () {
 };
 
 $downloadDocument = function ($docId) {
-    $document = Document::findOrFail($docId);
-    if (!$this->trip->canView(auth()->user())) {
-        abort(403);
-    }
+    // Scope to current trip to prevent IDOR
+    $document = $this->trip->documents()->findOrFail($docId);
 
     return Storage::disk('local')->download($document->file_path, $document->name);
 };
 
 $deleteDocument = function ($docId) {
-    $document = Document::findOrFail($docId);
+    // Scope to current trip to prevent IDOR
+    $document = $this->trip->documents()->findOrFail($docId);
     if (auth()->id() !== $document->uploaded_by && !$this->trip->canManageMembers(auth()->user())) {
         abort(403);
     }

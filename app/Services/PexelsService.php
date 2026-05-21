@@ -30,16 +30,28 @@ class PexelsService
             return $cachedData;
         }
 
-        $apiKey = trim(env('PEXELS_API'));
+        $apiKey = config('services.pexels.key');
+        if (!$apiKey) {
+            $apiKey = env('PEXELS_API');
+        }
+        $apiKey = $apiKey ? trim($apiKey) : null;
+
         if (!$apiKey) {
             return $fallback ?: self::getDefaultFallbackData($destination);
         }
 
         try {
             // Query Pexels search endpoint
-            $response = Http::withHeaders([
+            $http = Http::withHeaders([
                 'Authorization' => $apiKey,
-            ])->timeout(5)->get('https://api.pexels.com/v1/search', [
+            ])->timeout(5);
+
+            // On local dev (Windows), PHP may lack a CA bundle — skip SSL verify
+            if (app()->environment('local')) {
+                $http = $http->withoutVerifying();
+            }
+
+            $response = $http->get('https://api.pexels.com/v1/search', [
                 'query' => $destination,
                 'per_page' => 1,
                 'orientation' => 'landscape',

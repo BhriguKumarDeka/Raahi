@@ -13,7 +13,7 @@ state([
     'itinerary_location' => '',
     'itinerary_duration' => 60,
     'itinerary_cost' => 0,
-    'itinerary_category' => 'activity',
+    'itinerary_category' => 'activities',
 ]);
 
 on(['trip-updated' => '$refresh']);
@@ -55,7 +55,9 @@ $deleteItineraryItem = function ($id) {
         abort(403);
     }
 
-    ItineraryItem::destroy($id);
+    // Scope delete to current trip to prevent IDOR
+    $item = $this->trip->itineraryItems()->findOrFail($id);
+    $item->delete();
     $this->dispatch('trip-updated');
 };
 
@@ -195,11 +197,11 @@ $deleteItineraryItem = function ($id) {
                             <label for="itinerary_category" class="block text-xs font-bold text-text-main">Category</label>
                             <select id="itinerary_category" wire:model="itinerary_category"
                                     class="mt-1 block w-full px-4 py-2.5 border border-border-card rounded-xl text-xs bg-bg-primary focus:ring-1 focus:ring-brand-neutral focus:border-brand-neutral">
-                                <option value="activity">Activity</option>
+                                <option value="activities">Activities</option>
                                 <option value="transport">Transport</option>
                                 <option value="accommodation">Accommodation</option>
                                 <option value="food">Food & Dining</option>
-                                <option value="other">Other</option>
+                                <option value="miscellaneous">Miscellaneous</option>
                             </select>
                         </div>
 

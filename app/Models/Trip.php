@@ -157,4 +157,13 @@ class Trip extends Model
     {
         return $this->getUserRole($user) !== null;
     }
+
+    public function canDelete(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return $user->isSystemAdmin() || $this->creator_id === $user->id;
+    }
 }

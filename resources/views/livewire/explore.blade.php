@@ -12,6 +12,13 @@ state([
     'searchQuery' => '',
 ]);
 
+\Livewire\Volt\mount(function () {
+    if (request()->has('preview')) {
+        $this->previewKey = request('preview');
+        $this->showPreviewModal = true;
+    }
+});
+
 $destinations = computed(function () {
     $items = [
         'bali' => [
@@ -105,9 +112,9 @@ $filteredDestinations = computed(function () {
         $query = strtolower($this->searchQuery);
         $dests = array_filter($dests, function ($dest) use ($query) {
             return str_contains(strtolower($dest['name']), $query) ||
-                   str_contains(strtolower($dest['destination']), $query) ||
-                   str_contains(strtolower($dest['description']), $query) ||
-                   collect($dest['tags'])->contains(fn($tag) => str_contains(strtolower($tag), $query));
+                str_contains(strtolower($dest['destination']), $query) ||
+                str_contains(strtolower($dest['description']), $query) ||
+                collect($dest['tags'])->contains(fn($tag) => str_contains(strtolower($tag), $query));
         });
     }
 
@@ -124,7 +131,7 @@ $cloneTrip = function ($key) {
     if (!$template) return;
 
     $user = auth()->user();
-    
+
     // Create new Trip
     $trip = Trip::create([
         'name' => $template['name'],
@@ -144,7 +151,7 @@ $cloneTrip = function ($key) {
     foreach ($template['itinerary'] as $item) {
         $itemDate = $start->copy()->addDays($item['day'] - 1)->toDateString();
         $itemDatetime = $itemDate . ' ' . $item['time'] . ':00';
-        
+
         ItineraryItem::create([
             'trip_id' => $trip->id,
             'title' => $item['title'],
@@ -178,156 +185,236 @@ $hasRecommendationMatch = function ($tags) {
                 <h1 class="text-3xl font-extrabold tracking-tight font-serif-display text-text-main">Explore Curated Trips</h1>
                 <p class="text-text-muted text-xs mt-1.5 font-medium">Discover popular destinations matching your profile and clone them with one click.</p>
             </div>
-            
-            <!-- Search bar -->
-            <div class="relative w-full md:w-80">
+
+            <!-- Search bar with suggestions -->
+            <div class="relative w-full md:w-80"
+                x-data="{
+                     query: @entangle('searchQuery'),
+                     showSuggestions: false,
+                     allDestinations: @js(collect($this->destinations)->map(fn($d, $k) => ['key' => $k, 'name' => $d['name'], 'destination' => $d['destination']])->values()->toArray()),
+                     get filtered() {
+                         if (!this.query || this.query.length < 1) return [];
+                         let q = this.query.toLowerCase();
+                         return this.allDestinations.filter(d =>
+                             d.name.toLowerCase().includes(q) || d.destination.toLowerCase().includes(q)
+                         );
+                     },
+                     selectSuggestion(name) {
+                         this.query = name;
+                         this.showSuggestions = false;
+                     }
+                 }"
+                @click.outside="showSuggestions = false">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted">
                     <i class="ph ph-magnifying-glass"></i>
                 </div>
-                <input type="text" 
-                       wire:model.live.debounce.300ms="searchQuery" 
-                       placeholder="Search destinations, tags..." 
-                       class="block w-full pl-10 pr-4 py-2.5 bg-bg-primary border border-border-card rounded-full text-xs placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-brand-neutral focus:border-brand-neutral shadow-none transition">
+                <input type="text"
+                    wire:model.live.debounce.300ms="searchQuery"
+                    x-model="query"
+                    @focus="showSuggestions = true"
+                    @input="showSuggestions = true"
+                    placeholder="Search destinations, tags..."
+                    class="block w-full pl-10 pr-4 py-2.5 bg-bg-primary border border-border-card rounded-full text-xs placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-brand-neutral focus:border-brand-neutral shadow-none transition">
+
+                <!-- Search Suggestions Dropdown -->
+                <div x-show="showSuggestions && filtered.length > 0"
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0 -translate-y-1"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-100"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 -translate-y-1"
+                    class="absolute z-30 top-full mt-2 w-full bg-bg-primary border border-border-card rounded-xl shadow-lg overflow-hidden">
+                    <template x-for="item in filtered" :key="item.key">
+                        <button @click="selectSuggestion(item.name)"
+                            class="w-full text-left px-4 py-2.5 text-xs hover:bg-bg-secondary transition flex items-center gap-2.5 cursor-pointer">
+                            <i class="ph ph-map-pin text-brand-neutral text-sm"></i>
+                            <div>
+                                <span class="font-semibold text-text-main" x-text="item.name"></span>
+                                <span class="text-text-muted ml-1.5" x-text="item.destination"></span>
+                            </div>
+                        </button>
+                    </template>
+                </div>
             </div>
         </div>
 
         <!-- Filter Bar -->
         <div class="flex flex-wrap gap-2 mb-8 border-b border-border-light pb-6">
             <button wire:click="$set('selectedStyle', 'All')"
-                    class="px-4 py-2 border rounded-full text-xs font-semibold transition-all {{ $selectedStyle === 'All' ? 'bg-brand-neutral border-brand-neutral text-bg-primary' : 'bg-bg-primary border-border-card text-text-muted hover:border-text-main hover:text-text-main' }}">
+                class="px-4 py-2 border rounded-full text-xs font-semibold cursor-pointer transition-all {{ $selectedStyle === 'All' ? 'bg-brand-neutral border-brand-neutral text-bg-primary' : 'bg-bg-primary border-border-card text-text-muted hover:border-text-main hover:text-text-main' }}">
                 All Destinations
             </button>
             @foreach(['Adventure', 'Relaxed', 'Cultural', 'Budget', 'Luxury'] as $style)
-                <button wire:click="$set('selectedStyle', '{{ $style }}')"
-                        class="px-4 py-2 border rounded-full text-xs font-semibold transition-all {{ $selectedStyle === $style ? 'bg-brand-neutral border-brand-neutral text-bg-primary' : 'bg-bg-primary border-border-card text-text-muted hover:border-text-main hover:text-text-main' }}">
-                    {{ $style }}
-                </button>
+            <button wire:click="$set('selectedStyle', '{{ $style }}')"
+                class="px-4 py-2 border rounded-full text-xs font-semibold cursor-pointer transition-all {{ $selectedStyle === $style ? 'bg-brand-neutral border-brand-neutral text-bg-primary' : 'bg-bg-primary border-border-card text-text-muted hover:border-text-main hover:text-text-main' }}">
+                {{ $style }}
+            </button>
             @endforeach
         </div>
 
         <!-- Destinations Grid -->
         @if (empty($this->filteredDestinations))
-            <div class="bg-bg-primary border border-border-light rounded-2xl p-16 text-center shadow-none col-span-2 space-y-3">
-                <i class="ph ph-magnifying-glass text-4xl text-text-muted"></i>
-                <h3 class="mt-4 text-lg font-bold">No destinations found</h3>
-                <p class="mt-1 text-xs text-text-muted">Try refining your search query or choosing another style filter.</p>
-            </div>
+        <div class="bg-bg-primary border border-border-light rounded-2xl p-16 text-center shadow-none col-span-2 space-y-3">
+            <i class="ph ph-magnifying-glass text-4xl text-text-muted"></i>
+            <h3 class="mt-4 text-lg font-bold">No destinations found</h3>
+            <p class="mt-1 text-xs text-text-muted">Try refining your search query or choosing another style filter.</p>
+        </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                @foreach ($this->filteredDestinations as $key => $dest)
-                    <div class="bg-bg-primary border border-border-light rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between">
-                        <div>
-                            <!-- Cover Image -->
-                            <div class="h-60 w-full relative overflow-hidden bg-bg-secondary">
-                                <img src="{{ $dest['image'] }}" alt="{{ $dest['name'] }}" class="h-full w-full object-cover">
-                                
-                                <!-- Badges -->
-                                <div class="absolute top-4 left-4 flex flex-wrap gap-1">
-                                    @foreach($dest['tags'] as $tag)
-                                        <span class="bg-bg-primary border border-border-light text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full text-text-main">
-                                            {{ $tag }}
-                                        </span>
-                                    @endforeach
-                                </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach ($this->filteredDestinations as $key => $dest)
+            <div class="bg-bg-primary border border-border-light rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition duration-200">
+                <div class="p-6">
+                    <div>
+                        <h3 class="text-xl font-extrabold text-text-main leading-tight">{{ $dest['name'] }}</h3>
+                        <p class="text-sm text-text-muted mt-1">{{ $dest['destination'] }}</p>
+                    </div>
 
-                                @if($this->hasRecommendationMatch($dest['tags']))
-                                    <div class="absolute top-4 right-4 bg-emerald-700/90 border border-emerald-800 text-bg-primary text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full shadow-sm flex items-center space-x-1">
-                                        <i class="ph ph-seal-check text-xs"></i>
-                                        <span>Recommended</span>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <!-- Card Info -->
-                            <div class="p-6">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <span class="text-xs text-text-muted font-bold uppercase tracking-wider">{{ $dest['destination'] }}</span>
-                                        <h3 class="font-bold text-xl mt-1">{{ $dest['name'] }}</h3>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="text-[10px] text-text-muted block">Est. Budget</span>
-                                        <span class="font-extrabold text-lg text-text-main">₹{{ number_format($dest['budget'], 0) }}</span>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-text-muted mt-3 leading-relaxed">{{ $dest['description'] }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="p-6 pt-0 border-t border-border-light mt-4 flex space-x-3 bg-bg-primary">
-                            <button wire:click="openPreview('{{ $key }}')"
-                                    class="flex-1 px-4 py-2.5 bg-bg-secondary hover:bg-bg-primary border border-border-card text-text-main text-xs font-semibold rounded-xl transition">
-                                View Itinerary
-                            </button>
-                            <button wire:click="cloneTrip('{{ $key }}')"
-                                    class="flex-1 px-4 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1.5">
-                                <i class="ph ph-copy text-sm"></i>
-                                <span>Clone to Workspace</span>
-                            </button>
+                    <div class="relative mt-6 rounded-3xl overflow-hidden group">
+                        <img src="{{ $dest['image'] }}"
+                            alt="{{ $dest['destination'] }}"
+                            class="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute left-5 right-5 bottom-5 rounded-full bg-black/60 text-white px-4 py-3 flex items-center justify-between gap-3 text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1.5"><i class="ph ph-clock"></i>{{ count($dest['itinerary']) }} Days</span>
+                            <span class="flex items-center gap-1.5"><i class="ph ph-globe-hemisphere-east"></i>{{ $dest['tags'][0] ?? 'Curated' }}</span>
+                            <span class="flex items-center gap-1.5"><i class="ph ph-calendar-blank"></i>Template</span>
                         </div>
                     </div>
-                @endforeach
+
+                    <div class="mt-6 pt-5 border-t border-border-light space-y-3 text-sm">
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="font-bold text-text-main">Accommodation</span>
+                            <span class="text-text-muted text-right">Curated stays</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="font-bold text-text-main">Transport</span>
+                            <span class="text-text-muted text-right">Local transfers</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="font-bold text-text-main">Style</span>
+                            <span class="text-text-muted text-right">{{ implode(' & ', array_slice($dest['tags'], 0, 2)) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-bg-secondary/70 border-t border-border-light px-6 py-5 flex items-center justify-between">
+                    <div>
+                        <span class="block text-[10px] uppercase tracking-wider font-extrabold text-text-muted">Starting at</span>
+                        <span class="text-2xl font-extrabold text-text-main">{{ "\u{20B9}" }}{{ number_format($dest['budget'], 0) }}</span>
+                        <span class="text-xs text-text-muted"> / person</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button wire:click="openPreview('{{ $key }}')" title="View Itinerary" class="h-11 w-11 rounded-full border border-border-card bg-bg-primary text-text-main hover:border-brand-neutral hover:text-brand-neutral flex items-center justify-center transition cursor-pointer">
+                            <i class="ph ph-eye text-base"></i>
+                        </button>
+                        <button wire:click="cloneTrip('{{ $key }}')" title="Clone to Workspace" class="h-12 w-12 rounded-full bg-brand-neutral hover:bg-brand-hover text-bg-primary flex items-center justify-center transition shadow-md cursor-pointer">
+                            <i class="ph-bold ph-plus text-xl"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
+            @endforeach
+        </div>
         @endif
     </div>
 
     <!-- Preview Modal -->
     @if($showPreviewModal && !empty($previewKey))
-        @php
-            $modalDest = $this->destinations()[$previewKey];
-        @endphp
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
-            <div class="bg-bg-primary border border-border-light w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden p-8 animate-fade-in max-h-[85vh] flex flex-col justify-between">
-                <!-- Modal Header -->
-                <div class="flex justify-between items-center pb-4 border-b border-border-light mb-6">
-                    <div>
-                        <span class="text-xs text-text-muted font-bold uppercase tracking-wider">{{ $modalDest['destination'] }}</span>
-                        <h2 class="text-xl font-bold text-text-main mt-0.5">{{ $modalDest['name'] }} Itinerary</h2>
-                    </div>
-                    <button wire:click="$set('showPreviewModal', false)"
-                            class="text-text-muted hover:text-text-main transition p-1.5">
-                        <i class="ph ph-x text-lg"></i>
-                    </button>
+    @php
+    $modalDest = $this->destinations()[$previewKey];
+    $totalBudget = $modalDest['budget'];
+    $budgetBreakdown = [
+    ['label' => 'Accommodation', 'icon' => 'ph-buildings', 'percent' => 35, 'amount' => round($totalBudget * 0.35)],
+    ['label' => 'Transport', 'icon' => 'ph-airplane-tilt', 'percent' => 25, 'amount' => round($totalBudget * 0.25)],
+    ['label' => 'Activities', 'icon' => 'ph-compass', 'percent' => 25, 'amount' => round($totalBudget * 0.25)],
+    ['label' => 'Food & Drinks', 'icon' => 'ph-fork-knife', 'percent' => 15, 'amount' => round($totalBudget * 0.15)],
+    ];
+    @endphp
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+        <div class="bg-bg-primary border border-border-light w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden p-8 animate-fade-in max-h-[85vh] flex flex-col justify-between">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center pb-4 border-b border-border-light mb-6">
+                <div>
+                    <span class="text-xs text-text-muted font-bold uppercase tracking-wider">{{ $modalDest['destination'] }}</span>
+                    <h2 class="text-xl font-bold text-text-main mt-0.5">{{ $modalDest['name'] }} Itinerary</h2>
                 </div>
+                <button wire:click="$set('showPreviewModal', false)"
+                    class="text-text-muted hover:text-text-main transition p-1.5 cursor-pointer">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
 
-                <!-- Modal Content (Scrollable) -->
-                <div class="flex-1 overflow-y-auto space-y-6 pr-2">
-                    <p class="text-sm text-text-muted italic">{{ $modalDest['description'] }}</p>
+            <!-- Modal Content (Scrollable) -->
+            <div class="flex-1 overflow-y-auto space-y-6 pr-2">
+                <p class="text-sm text-text-muted italic">{{ $modalDest['description'] }}</p>
 
-                    <div class="space-y-4 relative border-l-2 border-border-light ml-4 pl-6 py-2">
-                        @foreach($modalDest['itinerary'] as $item)
-                            <div class="relative">
-                                <!-- Day marker -->
-                                <div class="absolute -left-[35px] top-1.5 bg-bg-primary border-2 border-brand-neutral text-text-main h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold">
-                                    D{{ $item['day'] }}
-                                </div>
-                                <div class="p-4 bg-bg-secondary border border-border-light rounded-xl space-y-1">
-                                    <div class="flex justify-between items-center text-xs font-semibold">
-                                        <span class="text-brand-neutral">{{ $item['time'] }}</span>
-                                        <span class="text-text-muted">{{ $item['location'] }}</span>
-                                    </div>
-                                    <h4 class="font-bold text-sm text-text-main">{{ $item['title'] }}</h4>
-                                    <p class="text-xs text-text-muted leading-relaxed mt-1">{{ $item['desc'] }}</p>
-                                </div>
+                <!-- Budget Breakdown -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-3 flex items-center gap-1.5">
+                        <i class="ph ph-wallet text-brand-neutral text-sm"></i>
+                        Budget Breakdown
+                        <span class="ml-auto text-text-main font-extrabold text-sm normal-case tracking-normal">{{ "\u{20B9}" }}{{ number_format($totalBudget, 0) }} total</span>
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        @foreach($budgetBreakdown as $segment)
+                        <div class="bg-bg-secondary border border-border-light rounded-xl p-3 text-center space-y-1.5">
+                            <div class="w-8 h-8 mx-auto rounded-full bg-brand-neutral/10 flex items-center justify-center">
+                                <i class="ph {{ $segment['icon'] }} text-brand-neutral text-base"></i>
                             </div>
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-text-muted">{{ $segment['label'] }}</p>
+                            <p class="text-sm font-extrabold text-text-main">{{ "\u{20B9}" }}{{ number_format($segment['amount'], 0) }}</p>
+                            <p class="text-[10px] text-text-muted">{{ $segment['percent'] }}%</p>
+                        </div>
                         @endforeach
                     </div>
                 </div>
 
-                <!-- Modal Footer -->
-                <div class="flex justify-end space-x-2 pt-6 border-t border-border-light mt-6">
-                    <button wire:click="$set('showPreviewModal', false)"
-                            class="px-5 py-2.5 border border-border-card rounded-xl text-xs font-semibold text-text-main hover:bg-bg-secondary transition">
-                        Close
-                    </button>
-                    <button wire:click="cloneTrip('{{ $previewKey }}')"
-                            class="px-5 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-semibold rounded-xl transition flex items-center space-x-1.5">
-                        <i class="ph ph-copy text-sm"></i>
-                        <span>Clone Itinerary</span>
-                    </button>
+                <!-- Itinerary Timeline -->
+                <div class="space-y-4 relative border-l-2 border-border-light ml-4 pl-6 py-2">
+                    @foreach($modalDest['itinerary'] as $item)
+                    <div class="relative">
+                        <!-- Day marker -->
+                        <div class="absolute -left-8.75 top-1.5 bg-bg-primary border-2 border-brand-neutral text-text-main h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold">
+                            D{{ $item['day'] }}
+                        </div>
+                        <div class="p-4 bg-bg-secondary border border-border-light rounded-xl space-y-1">
+                            <div class="flex justify-between items-center text-xs font-semibold">
+                                <span class="text-brand-neutral">{{ $item['time'] }}</span>
+                                <span class="text-text-muted">{{ $item['location'] }}</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-text-main">{{ $item['title'] }}</h4>
+                            <p class="text-xs text-text-muted leading-relaxed mt-1">{{ $item['desc'] }}</p>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
             </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end space-x-2 pt-6 border-t border-border-light mt-6">
+                <!-- Share Button in Modal -->
+                <div x-data="{ copied: false }" class="relative mr-auto">
+                    <button @click="
+                            navigator.clipboard.writeText(window.location.origin + '/explore?preview={{ $previewKey }}');
+                            copied = true;
+                            setTimeout(() => copied = false, 2000);
+                        " class="px-4 py-2.5 border border-border-card rounded-xl text-xs font-semibold text-text-main hover:bg-bg-secondary transition cursor-pointer flex items-center gap-1.5">
+                        <i class="ph ph-share-network text-sm"></i>
+                        <span x-text="copied ? 'Copied!' : 'Share'"></span>
+                    </button>
+                </div>
+
+                <button wire:click="$set('showPreviewModal', false)"
+                    class="px-5 py-2.5 border border-border-card rounded-xl text-xs font-semibold text-text-main hover:bg-bg-secondary transition cursor-pointer">
+                    Close
+                </button>
+                <button wire:click="cloneTrip('{{ $previewKey }}')"
+                    class="px-5 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-semibold rounded-xl transition flex items-center space-x-1.5 cursor-pointer">
+                    <i class="ph ph-copy text-sm"></i>
+                    <span>Clone Itinerary</span>
+                </button>
+            </div>
         </div>
+    </div>
     @endif
 </div>

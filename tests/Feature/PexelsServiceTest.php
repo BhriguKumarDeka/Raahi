@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Http;
 beforeEach(function () {
     // Clear cache before each test
     Cache::flush();
-    // Configure a dummy API key in environment for testing
+    // Configure a dummy API key in environment and configuration for testing
     putenv('PEXELS_API=test-api-key');
+    config(['services.pexels.key' => 'test-api-key']);
 });
 
 afterEach(function () {
     putenv('PEXELS_API=');
+    config(['services.pexels.key' => null]);
 });
 
 test('PexelsService caches successful responses forever', function () {

@@ -7,15 +7,15 @@
 
         <title>{{ config('app.name', 'Raahi') }}</title>
 
-        <!-- Fonts (Plus Jakarta Sans & Playfair Display for premium typography) -->
+        <!-- Fonts (Google Sans) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans-display antialiased bg-bg-secondary text-text-main selection:bg-brand-neutral selection:text-bg-primary">
+    <body class="font-sans antialiased bg-bg-secondary text-text-main selection:bg-brand-neutral selection:text-bg-primary">
         <div class="min-h-screen flex flex-col">
             <!-- Navigation -->
             <livewire:layout.navigation />

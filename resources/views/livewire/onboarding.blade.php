@@ -46,7 +46,7 @@ $completeOnboarding = function () {
 
     $user->update([
         'travel_style' => $this->travelStyle,
-        'budget_preference' => $this->planningRole, // we'll use this or map it to budget/style
+        'budget_preference' => $this->planningRole, // NOTE: column stores planning role (Organizer/Contributor/Passive), not budget preference
         'activity_interests' => $this->activityInterests,
         'preferred_destinations' => $destinations,
         'onboarded' => true,

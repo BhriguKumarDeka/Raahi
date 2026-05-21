@@ -7,15 +7,15 @@
 
         <title>{{ config('app.name', 'Raahi') }} - Join the Adventure</title>
 
-        <!-- Fonts (Plus Jakarta Sans & Playfair Display for premium typography) -->
+        <!-- Fonts (Google Sans) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans-display text-text-main antialiased bg-bg-secondary selection:bg-brand-neutral selection:text-bg-primary">
+    <body class="font-sans text-text-main antialiased bg-bg-secondary selection:bg-brand-neutral selection:text-bg-primary">
         <div class="min-h-screen flex flex-col sm:justify-center items-center py-12 bg-bg-secondary relative overflow-hidden">
             <!-- Ambient top glow -->
             <div class="absolute -top-48 -left-48 w-[400px] h-[400px] rounded-full bg-brand-neutral/5 blur-[120px] pointer-events-none"></div>

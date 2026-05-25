@@ -225,10 +225,10 @@ $getTripImage = function ($destination) {
         <div class="bg-bg-primary border border-border-light rounded-3xl p-6 md:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 shadow-[0_4px_24px_rgba(26,59,43,0.03)]">
             {{-- Left — narrative --}}
             <div class="w-full lg:w-1/2 space-y-2.5">
-                <span class="font-serif-display italic text-brand-neutral text-xl block">Your Journey at Raahi</span>
+                <span class="font-serif-display italic text-brand-neutral text-xl block">Are you ready for the next vacation?</span>
                 <h3 class="text-2xl font-bold tracking-tight font-sans-display text-text-main leading-snug">
                     @if ($this->stats['daysToNextTrip'] !== null)
-                    Your next adventure, <span class="italic text-brand-neutral font-serif-display font-medium">{{ $this->stats['nextTripName'] }}</span>, starts in <span class="text-brand-neutral font-extrabold">{{ $this->stats['daysToNextTrip'] }} days</span>!
+                    Your upcoming adventure, <span class="italic text-brand-neutral font-serif-display font-medium">{{ $this->stats['nextTripName'] }}</span>, starts in <span class="text-brand-neutral font-extrabold">{{ $this->stats['daysToNextTrip'] }} days</span>!
                     @else
                     Where will you and your friends explore next?
                     @endif

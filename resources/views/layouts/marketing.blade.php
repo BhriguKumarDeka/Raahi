@@ -36,7 +36,7 @@
     </head>
     <body class="font-sans antialiased bg-bg-primary text-text-main selection:bg-brand-neutral selection:text-bg-primary">
         <div class="min-h-screen flex flex-col justify-between overflow-x-hidden">
-            
+
             <!-- Navbar Shell -->
             <div id="landing-nav-shell" class="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 transition-all duration-300">
                 <header id="landing-nav" class="max-w-5xl mx-auto rounded-full border border-transparent bg-transparent transition-all duration-300">
@@ -89,97 +89,100 @@
             </main>
 
             <!-- Premium Structured Footer -->
-            <footer class="bg-brand-neutral text-bg-primary/95 border-t border-brand-hover pt-20 pb-12">
-                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-                    <!-- Layer 1: Newsletter -->
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-b border-white/10">
-                        <div class="max-w-md text-left">
-                            <h4 class="text-xl font-bold text-white mb-2">Get travel inspiration & tips</h4>
-                            <p class="text-xs text-bg-primary/60 leading-relaxed">Subscribe to our newsletter for hand-curated itineraries, local explorer guides, and early platform updates.</p>
-                        </div>
-                        <div class="w-full md:w-auto relative group">
-                            <div class="absolute -inset-0.5 bg-linear-to-r from-emerald-400 to-teal-400 rounded-full blur opacity-0 group-focus-within:opacity-30 transition duration-500"></div>
-                            <form action="#" class="relative flex items-center bg-white/5 border border-white/10 rounded-full p-1 w-full md:w-90">
-                                <input type="email" placeholder="Your email address" class="grow bg-transparent border-0 py-2 pl-4 pr-3 text-xs font-semibold text-white placeholder-white/30 focus:ring-0 focus:outline-none" required />
-                                <button type="submit" class="px-5 py-2 rounded-full bg-bg-primary hover:bg-bg-secondary text-brand-neutral font-bold text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer">
-                                    Subscribe
-                                </button>
-                            </form>
-                        </div>
+            <footer class="bg-brand-neutral text-bg-primary/95 border-t border-brand-hover pt-20 pb-12 relative overflow-hidden">
+            <div class="pointer-events-none absolute inset-x-0 bottom-0">
+                <img src="/footer-illustration.svg" alt="footer-illustration" class="w-full max-w-6xl mx-auto opacity-20" aria-hidden="true" />
+            </div>
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
+                <!-- Layer 1: Newsletter -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-b border-white/10">
+                    <div class="max-w-md text-left">
+                        <h4 class="text-xl font-bold text-white mb-2">Get travel inspiration & tips</h4>
+                        <p class="text-xs text-bg-primary/60 leading-relaxed">Subscribe to our newsletter for hand-curated itineraries, local explorer guides, and early platform updates.</p>
                     </div>
-
-                    <!-- Layer 2: Main Footer Links -->
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-8 pt-4 text-left">
-                        <!-- Column 1: Brand Info -->
-                        <div class="col-span-2 space-y-4">
-                            <a href="/" class="font-sans-display font-extrabold italic text-2xl tracking-tight text-white flex items-center space-x-2">
-                                <span>Raahi.in</span>
-                            </a>
-                            <p class="text-xs text-bg-primary/60 leading-relaxed max-w-xs">
-                                Empowering groups to plan, coordinate, and experience travel together. Beautiful, unified workspaces designed with absolute precision.
-                            </p>
-                            <!-- Social Icons -->
-                            <div class="flex items-center space-x-3 pt-2">
-                                <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
-                                    <i class="ph ph-instagram-logo text-base"></i>
-                                </a>
-                                <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
-                                    <i class="ph ph-twitter-logo text-base"></i>
-                                </a>
-                                <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
-                                    <i class="ph ph-youtube-logo text-base"></i>
-                                </a>
-                                <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
-                                    <i class="ph ph-linkedin-logo text-base"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Column 2: Product -->
-                        <div class="space-y-3">
-                            <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Product</h5>
-                            <ul class="space-y-2 text-xs">
-                                <li><a href="#" class="hover:text-white transition">Dynamic Timeline</a></li>
-                                <li><a href="#" class="hover:text-white transition">Budget Ledger</a></li>
-                                <li><a href="#" class="hover:text-white transition">Itinerary Cloner</a></li>
-                                <li><a href="#" class="hover:text-white transition">Collaborative Polls</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Column 3: Company -->
-                        <div class="space-y-3">
-                            <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Company</h5>
-                            <ul class="space-y-2 text-xs">
-                                <li><a href="/about" class="hover:text-white transition">About Us</a></li>
-                                <li><a href="#" class="hover:text-white transition">Our Story</a></li>
-                                <li><a href="#" class="hover:text-white transition">Careers</a></li>
-                                <li><a href="/contact" class="hover:text-white transition">Contact Us</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Column 4: Resources -->
-                        <div class="space-y-3">
-                            <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Resources</h5>
-                            <ul class="space-y-2 text-xs">
-                                <li><a href="#" class="hover:text-white transition">Backpacker Blogs</a></li>
-                                <li><a href="#" class="hover:text-white transition">Help Center</a></li>
-                                <li><a href="#" class="hover:text-white transition">Planning Guides</a></li>
-                                <li><a href="#" class="hover:text-white transition">API Access</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Layer 3: Copyright and Legal -->
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10 text-[11px] text-bg-primary/50 text-left">
-                        <p>&copy; {{ date('Y') }} Raahi.in. Built with absolute precision. All rights reserved.</p>
-                        <div class="flex space-x-6">
-                            <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                            <a href="#" class="hover:text-white transition">Terms of Service</a>
-                            <a href="#" class="hover:text-white transition">Cookie Preferences</a>
-                        </div>
+                    <div class="w-full md:w-auto relative group">
+                        <div class="absolute -inset-0.5 bg-linear-to-r from-emerald-400 to-teal-400 rounded-full blur opacity-0 group-focus-within:opacity-30 transition duration-500"></div>
+                        <form action="#" class="relative flex items-center bg-white/5 border border-white/10 rounded-full p-1 w-full md:w-90">
+                            <input type="email" placeholder="Your email address" class="grow bg-transparent border-0 py-2 pl-4 pr-3 text-xs font-semibold text-white placeholder-white/30 focus:ring-0 focus:outline-none" required />
+                            <button type="submit" class="px-5 py-2 rounded-full bg-bg-primary hover:bg-bg-secondary text-brand-neutral font-bold text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer">
+                                Subscribe
+                            </button>
+                        </form>
                     </div>
                 </div>
-            </footer>
+
+                <!-- Layer 2: Main Footer Links -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-8 pt-4 text-left">
+                    <!-- Column 1: Brand Info -->
+                    <div class="col-span-2 space-y-4">
+                        <a href="/" class="font-sans-display font-extrabold italic text-2xl tracking-tight text-white flex items-center space-x-2">
+                            <span>Raahi.in</span>
+                        </a>
+                        <p class="text-xs text-bg-primary/60 leading-relaxed max-w-xs">
+                            Empowering groups to plan, coordinate, and experience travel together. Beautiful, unified workspaces designed with absolute precision.
+                        </p>
+                        <!-- Social Icons -->
+                        <div class="flex items-center space-x-3 pt-2">
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-instagram-logo text-base"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-twitter-logo text-base"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-youtube-logo text-base"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-linkedin-logo text-base"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Product -->
+                    <div class="space-y-3">
+                        <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Product</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><a href="#" class="hover:text-white transition">Dynamic Timeline</a></li>
+                            <li><a href="#" class="hover:text-white transition">Budget Ledger</a></li>
+                            <li><a href="#" class="hover:text-white transition">Itinerary Cloner</a></li>
+                            <li><a href="#" class="hover:text-white transition">Collaborative Polls</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Company -->
+                    <div class="space-y-3">
+                        <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Company</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                            <li><a href="#" class="hover:text-white transition">Our Story</a></li>
+                            <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                            <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 4: Resources -->
+                    <div class="space-y-3">
+                        <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Resources</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><a href="#" class="hover:text-white transition">Backpacker Blogs</a></li>
+                            <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+                            <li><a href="#" class="hover:text-white transition">Planning Guides</a></li>
+                            <li><a href="#" class="hover:text-white transition">API Access</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Layer 3: Copyright and Legal -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10 text-[11px] text-bg-primary/50 text-left">
+                    <p>&copy; {{ date('Y') }} Raahi.in. Built with absolute precision. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                        <a href="#" class="hover:text-white transition">Terms of Service</a>
+                        <a href="#" class="hover:text-white transition">Cookie Preferences</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
         </div>
 
         <!-- Custom JS code for Animations, Carousel and Typewriter -->
@@ -213,29 +216,29 @@
 
                     if (document.getElementById('discover')) {
                         inView('#discover', () => {
-                            animate('#discover .grid > div', { opacity: [0, 1], y: [40, 0] }, { 
-                                delay: (info) => info * 0.1, 
-                                duration: 0.5, 
-                                easing: 'ease-out' 
+                            animate('#discover .grid > div', { opacity: [0, 1], y: [40, 0] }, {
+                                delay: (info) => info * 0.1,
+                                duration: 0.5,
+                                easing: 'ease-out'
                             });
                         });
                     }
 
                     if (document.querySelector('.stat-item')) {
                         inView('.stat-item', () => {
-                            animate('.stat-item', { opacity: [0, 1], scale: [0.95, 1] }, { 
-                                delay: (info) => info * 0.08, 
-                                duration: 0.5 
+                            animate('.stat-item', { opacity: [0, 1], scale: [0.95, 1] }, {
+                                delay: (info) => info * 0.08,
+                                duration: 0.5
                             });
                         });
                     }
 
                     // General page animations for specific marketing sections
                     if (document.querySelector('.animate-fade-in-up')) {
-                        animate('.animate-fade-in-up', { opacity: [0, 1], y: [20, 0] }, { 
+                        animate('.animate-fade-in-up', { opacity: [0, 1], y: [20, 0] }, {
                             delay: (info) => info * 0.15,
-                            duration: 0.6, 
-                            easing: 'ease-out' 
+                            duration: 0.6,
+                            easing: 'ease-out'
                         });
                     }
 
@@ -244,8 +247,8 @@
                     const nav = document.getElementById('landing-nav');
                     const brand = document.querySelector('[data-nav-brand]');
                     const navLinks = document.querySelectorAll('[data-nav-link]');
-                    
-                    // On sub-pages without a specific dark image banner or with a shorter hero, we can set default solid state 
+
+                    // On sub-pages without a specific dark image banner or with a shorter hero, we can set default solid state
                     // or let scroll handle it. Let's make it shift dynamic on scroll relative to the viewport height.
                     const updateNav = () => {
                         const threshold = 100; // Solid after 100px scroll
@@ -300,7 +303,7 @@
 
                         function type() {
                             const currentDest = destinations[destIndex];
-                            
+
                             if (isDeleting) {
                                 searchInput.placeholder = "Explore " + currentDest.substring(0, charIndex - 1);
                                 charIndex--;
@@ -322,7 +325,7 @@
 
                             setTimeout(type, typingSpeed);
                         }
-                        
+
                         setTimeout(type, 1000);
                     }
                 };

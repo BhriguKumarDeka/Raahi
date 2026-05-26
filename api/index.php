@@ -1,8 +1,14 @@
 <?php
 
-
 try {
     $storageDir = '/tmp/storage';
+
+    // Clear stale cache files on every boot
+    @unlink('/tmp/config.php');
+    @unlink('/tmp/routes.php');
+    @unlink('/tmp/services.php');
+    @unlink('/tmp/packages.php');
+    @unlink('/tmp/events.php');
 
     if (!is_dir($storageDir)) {
         mkdir($storageDir, 0777, true);
@@ -20,7 +26,6 @@ try {
     putenv('APP_ROUTES_CACHE=' . '/tmp/routes.php');
     putenv('APP_EVENTS_CACHE=' . '/tmp/events.php');
 
-    // Forward Vercel requests to the normal Laravel entry point
     require __DIR__ . '/../public/index.php';
 
 } catch (\Throwable $e) {

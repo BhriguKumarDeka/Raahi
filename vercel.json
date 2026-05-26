@@ -1,38 +1,39 @@
 {
-    "version": 2,
-    "framework": null,
-    "installCommand": "npm install",
-    "buildCommand": "npm run build",
-    "functions": {
-        "api/index.php": {
-            "runtime": "vercel-php@0.9.0"
-        }
-    },
-    "routes": [
-        {
-            "src": "/build/(.*)",
-            "dest": "/public/build/$1"
-        },
-        {
-            "src": "/assets/(.*)",
-            "dest": "/public/assets/$1"
-        },
-        {
-            "src": "/favicon.(ics|ico|png)",
-            "dest": "/public/favicon.$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
-        }
-    ],
-    "env": {
-        "APP_ENV": "production",
-        "APP_DEBUG": "false",
-        "CACHE_DRIVER": "array",
-        "SESSION_DRIVER": "cookie",
-        "QUEUE_CONNECTION": "sync",
-        "LOG_CHANNEL": "stderr",
-        "DB_DATABASE": "/tmp/database.sqlite"
+  "version": 2,
+  "framework": null,
+  "outputDirectory": ".",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.9.0"
     }
+  },
+  "routes": [
+    {
+      "src": "/build/(.*)",
+      "dest": "/public/build/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/public/assets/$1"
+    },
+    {
+      "src": "/favicon.(ics|ico|png)",
+      "dest": "/public/favicon.$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ],
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "CACHE_DRIVER": "array",
+    "SESSION_DRIVER": "cookie",
+    "QUEUE_CONNECTION": "sync",
+    "LOG_CHANNEL": "stderr",
+    "DB_DATABASE": "/tmp/database.sqlite"
+  }
 }

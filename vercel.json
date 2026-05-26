@@ -11,16 +11,7 @@
   },
   "routes": [
     {
-      "src": "/build/(.*)",
-      "dest": "/build/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/favicon.(ics|ico|png)",
-      "dest": "/favicon.$1"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",

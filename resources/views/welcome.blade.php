@@ -52,18 +52,18 @@
                     <!-- Nav links -->
                     <ul class="flex items-center space-x-6">
                         <li>
-                            <a href="/trips" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
-                                How it works
+                            <a href="#discover" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
+                                Destinations
                             </a>
                         </li>
                         <li>
-                            <a href="/about" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
+                            <a href="#values" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
                                 About
                             </a>
                         </li>
                         <li>
-                            <a href="/contact" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
-                                Contact
+                            <a href="#features" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
+                                Features
                             </a>
                         </li>
                     </ul>
@@ -367,19 +367,19 @@
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                     <div class="stat-item">
-                        <p class="text-4xl font-extrabold text-brand-neutral">50+</p>
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="50" data-suffix="+">0</span></p>
                         <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Verified Cozy Destinations</p>
                     </div>
                     <div class="stat-item">
-                        <p class="text-4xl font-extrabold text-brand-neutral">200+</p>
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="200" data-suffix="+">0</span></p>
                         <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Group Trips Planned</p>
                     </div>
                     <div class="stat-item">
-                        <p class="text-4xl font-extrabold text-brand-neutral">120,000+</p>
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="120000" data-suffix="+">0</span></p>
                         <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Active Co-planners</p>
                     </div>
                     <div class="stat-item">
-                        <p class="text-4xl font-extrabold text-brand-neutral">$15 Million</p>
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="15" data-prefix="$" data-suffix=" Million">0</span></p>
                         <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Expenses Nettted & Split</p>
                     </div>
                 </div>
@@ -635,8 +635,11 @@
         </section>
 
         <!-- Premium Structured Footer -->
-        <footer class="bg-brand-neutral text-bg-primary/95 border-t border-brand-hover pt-20 pb-12">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        <footer class="bg-brand-neutral text-bg-primary/95 border-t border-brand-hover pt-20 pb-12 relative overflow-hidden">
+            <div class="pointer-events-none absolute inset-x-0 bottom-0">
+                <img src="/build/assets/footer-illustration.svg" alt="footer-illustration" class="w-full max-w-6xl mx-auto opacity-20" aria-hidden="true" />
+            </div>
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
                 <!-- Layer 1: Newsletter -->
                 <div class="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-b border-white/10">
                     <div class="max-w-md text-left">
@@ -797,6 +800,32 @@
                     }, {
                         delay: (info) => info * 0.08,
                         duration: 0.5
+                    });
+
+                    document.querySelectorAll('.stat-num').forEach(el => {
+                        if (el.dataset.animated) return;
+                        el.dataset.animated = "true";
+
+                        const target = parseInt(el.dataset.target, 10);
+                        const prefix = el.dataset.prefix || '';
+                        const suffix = el.dataset.suffix || '';
+                        const duration = 2000;
+                        const startTime = performance.now();
+
+                        const update = (time) => {
+                            const elapsed = time - startTime;
+                            const progress = Math.min(elapsed / duration, 1);
+
+                            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                            const current = Math.floor(easeProgress * target);
+
+                            el.innerHTML = prefix + current.toLocaleString() + suffix;
+
+                            if (progress < 1) {
+                                requestAnimationFrame(update);
+                            }
+                        };
+                        requestAnimationFrame(update);
                     });
                 });
 

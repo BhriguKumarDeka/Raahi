@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->reportable(function (\Throwable $e) {
-            error_log("REAL LARAVEL ERROR: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+            error_log("===== REAL LARAVEL ERROR =====");
+            error_log("Exception: " . get_class($e));
+            error_log("Message: " . $e->getMessage());
+            error_log("File: " . $e->getFile() . " on line " . $e->getLine());
+            error_log("==============================");
         });
     })->create();

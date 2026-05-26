@@ -1,13 +1,10 @@
 {
     "version": 2,
+    "buildCommand": "npm install && npm run build",
     "builds": [
         {
             "src": "api/index.php",
             "use": "vercel-php@0.9.0"
-        },
-        {
-            "src": "/public/**",
-            "use": "@vercel/static"
         }
     ],
     "routes": [
@@ -22,7 +19,7 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
+        "APP_DEBUG": "false",
         "CACHE_DRIVER": "array",
         "SESSION_DRIVER": "cookie",
         "QUEUE_CONNECTION": "sync",

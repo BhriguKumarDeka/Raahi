@@ -26,6 +26,7 @@
         "CACHE_DRIVER": "array",
         "SESSION_DRIVER": "cookie",
         "QUEUE_CONNECTION": "sync",
-        "LOG_CHANNEL": "stderr"
+        "LOG_CHANNEL": "stderr",
+        "DB_DATABASE": "/tmp/database.sqlite"
     }
 }

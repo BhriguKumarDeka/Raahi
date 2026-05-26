@@ -27,7 +27,7 @@
             <img src="{{ $image }}" 
                  alt="{{ $title }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
             <!-- Overlay stats (standardized to Phosphor icons, no emojis) -->
-            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-[9px] font-bold bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+            <div class="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-white text-[9px] font-bold bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
                 <span class="flex items-center gap-1">
                     <i class="ph ph-clock text-xs"></i> 
                     <span>{{ $duration }}</span>

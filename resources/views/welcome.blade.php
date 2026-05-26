@@ -42,15 +42,19 @@
 <body class="font-sans antialiased bg-bg-primary text-text-main selection:bg-brand-neutral selection:text-bg-primary">
     <div class="min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-        <div id="landing-nav-shell" class="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 transition-all duration-300">
-            <header id="landing-nav" class="max-w-7xl mx-auto rounded-full border border-transparent bg-transparent transition-all duration-300">
+        <div id="landing-nav-shell" class="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 transition-all duration-300" x-data="{ mobileMenuOpen: false }">
+            <header id="landing-nav" 
+                    :class="mobileMenuOpen ? 'rounded-[1.5rem] md:rounded-full !bg-emerald-950/95 !border-white/10 shadow-2xl' : 'rounded-full'"
+                    class="max-w-7xl mx-auto border border-transparent bg-transparent transition-all duration-300">
                 <div class="px-6 h-16 flex items-center justify-between">
-                    <a href="/" data-nav-brand class="font-sans-display font-extrabold text-2xl tracking-tight text-white flex items-center space-x-2 text-shadow-lg transition-all duration-300 hover:scale-[1.05]">
+                    <a href="/" data-nav-brand 
+                       :class="mobileMenuOpen ? '!text-white' : ''"
+                       class="font-sans-display font-extrabold text-2xl tracking-tight text-white flex items-center space-x-2 text-shadow-lg transition-all duration-300 hover:scale-[1.05]">
                         <span>Raahi.com</span>
                     </a>
 
-                    <!-- Nav links -->
-                    <ul class="flex items-center space-x-6">
+                    <!-- Nav links (Desktop) -->
+                    <ul class="hidden md:flex items-center space-x-6">
                         <li>
                             <a href="#discover" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
                                 Destinations
@@ -68,8 +72,8 @@
                         </li>
                     </ul>
 
-                    <!-- Auth Actions -->
-                    <div class="flex items-center space-x-3">
+                    <!-- Auth Actions (Desktop) -->
+                    <div class="hidden md:flex items-center space-x-3">
                         @auth
                         <a href="{{ route('dashboard') }}" class="px-5 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-bold rounded-full transition-all duration-200 shadow-sm hover:scale-[1.02]">
                             Dashboard
@@ -83,6 +87,65 @@
                         </a>
                         @endauth
                     </div>
+
+                    <!-- Hamburger Button (Mobile only) -->
+                    <div class="flex md:hidden">
+                        <button @click="mobileMenuOpen = !mobileMenuOpen" 
+                                type="button" 
+                                :class="mobileMenuOpen ? '!text-white' : ''"
+                                class="text-white hover:text-brand-neutral focus:outline-none p-2 transition-colors duration-200" 
+                                id="hamburger-btn">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-show="!mobileMenuOpen">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-show="mobileMenuOpen" style="display: none;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Dropdown -->
+                <div x-show="mobileMenuOpen" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="md:hidden px-6 pt-2 pb-6 space-y-4 border-t border-white/10 text-left" 
+                     style="display: none;">
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="#discover" @click="mobileMenuOpen = false" class="block text-sm font-bold uppercase tracking-wider text-white/80 hover:text-white py-2">
+                                Destinations
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#values" @click="mobileMenuOpen = false" class="block text-sm font-bold uppercase tracking-wider text-white/80 hover:text-white py-2">
+                                About
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#features" @click="mobileMenuOpen = false" class="block text-sm font-bold uppercase tracking-wider text-white/80 hover:text-white py-2">
+                                Features
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="pt-4 border-t border-white/10 flex flex-col space-y-3">
+                        @auth
+                        <a href="{{ route('dashboard') }}" class="w-full text-center py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-bold rounded-full transition-all duration-200 shadow-sm">
+                            Dashboard
+                        </a>
+                        @else
+                        <a href="{{ route('login') }}" class="block text-center text-sm font-bold uppercase tracking-wider text-white/80 hover:text-white py-2">
+                            Sign In
+                        </a>
+                        <a href="{{ route('register') }}" class="w-full text-center py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-bold rounded-full transition-all duration-200 shadow-sm">
+                            Get Started
+                        </a>
+                        @endauth
+                    </div>
                 </div>
             </header>
         </div>
@@ -92,7 +155,7 @@
             <div class="absolute inset-0 z-0">
                 <img src="https://images.pexels.com/photos/34244310/pexels-photo-34244310.jpeg/"
                     alt="Lush green forested mountain valley"
-                    class="w-full h-full object-fit filter contrast-1.1 brightness-90" />
+                    class="w-full h-full object-cover filter contrast-1.1 brightness-90" />
                 <div class="absolute inset-0 bg-linear-to-t from-bg-secondary/50 via-transparent to-white/50"></div>
             </div>
 
@@ -115,14 +178,14 @@
                         <input type="text" id="typing-search" placeholder="Search destinations..." class="grow bg-transparent border-0 py-2.5 pl-3 pr-4 text-sm font-semibold text-text-main placeholder-text-muted/50 focus:ring-0 focus:outline-none" />
                         <div>
                             @auth
-                            <a href="{{ route('dashboard') }}" class="px-6 h-10 rounded-full bg-brand-neutral hover:bg-brand-hover text-bg-primary flex items-center justify-center transition-all duration-200 shadow-sm font-bold text-xs uppercase tracking-wider gap-2">
+                            <a href="{{ route('dashboard') }}" class="px-4 sm:px-6 h-10 rounded-full bg-brand-neutral hover:bg-brand-hover text-bg-primary flex items-center justify-center transition-all duration-200 shadow-sm font-bold text-xs uppercase tracking-wider gap-2">
                                 <i class="ph ph-airplane-tilt text-lg"></i>
-                                <span>Add Trip</span>
+                                <span class="hidden sm:inline">Add Trip</span>
                             </a>
                             @else
-                            <a href="{{ route('register') }}" class="px-6 h-10 rounded-full bg-brand-neutral hover:bg-brand-hover text-bg-primary flex items-center justify-center transition-all duration-200 shadow-sm font-bold text-xs uppercase tracking-wider gap-2">
+                            <a href="{{ route('register') }}" class="px-4 sm:px-6 h-10 rounded-full bg-brand-neutral hover:bg-brand-hover text-bg-primary flex items-center justify-center transition-all duration-200 shadow-sm font-bold text-xs uppercase tracking-wider gap-2">
                                 <i class="ph ph-plus text-xs"></i>
-                                <span>Add Trip</span>
+                                <span class="hidden sm:inline">Add Trip</span>
                             </a>
                             @endauth
                         </div>
@@ -134,12 +197,12 @@
         <!-- Brand Logo Bar  -->
         <section class="py-12 bg-bg-primary">
             <div class="max-w-5xl mx-auto px-4 text-center">
-                <div class="flex flex-wrap items-center justify-center gap-8 md:gap-36 opacity-40 grayscale contrast-125">
-                    <x-simpleicon-airbnb class="h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
-                    <x-simpleicon-expedia class="h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
-                    <x-simpleicon-uber class="h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
-                    <x-simpleicon-bookingdotcom class="h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
-                    <x-simpleicon-tripadvisor class="h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
+                <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-36 opacity-40 grayscale contrast-125">
+                    <x-simpleicon-airbnb class="h-8 sm:h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
+                    <x-simpleicon-expedia class="h-8 sm:h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
+                    <x-simpleicon-uber class="h-8 sm:h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
+                    <x-simpleicon-bookingdotcom class="h-8 sm:h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
+                    <x-simpleicon-tripadvisor class="h-8 sm:h-12 w-auto text-text-muted fill-current hover:text-brand-neutral transition-colors duration-300" />
                 </div>
             </div>
         </section>
@@ -182,8 +245,8 @@
 
                     <!-- Right carousel -->
                     <div class="w-full lg:w-2/3 relative">
-                        <!-- Prev/Next Controls floating right -->
-                        <div class="absolute -top-12 right-2 flex space-x-2 z-10">
+                        <!-- Prev/Next Controls -->
+                        <div class="flex justify-end space-x-2 mb-4 lg:absolute lg:-top-12 lg:right-2 lg:mb-0 z-10">
                             <button id="carousel-prev" class="w-8 h-8 rounded-full border border-border-card bg-bg-primary flex items-center justify-center text-text-main hover:bg-brand-neutral hover:text-bg-primary hover:border-brand-neutral transition">
                                 <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
@@ -837,6 +900,10 @@
                 const partners = document.querySelector('section.py-12.bg-bg-primary');
 
                 const updateNav = () => {
+                    // Skip scroll-based styling when mobile menu is open
+                    const mobileMenuOpen = navShell.__x && navShell.__x.$data && navShell.__x.$data.mobileMenuOpen;
+                    if (mobileMenuOpen) return;
+
                     const threshold = partners ?
                         partners.offsetTop + partners.offsetHeight - 80 :
                         window.innerHeight * 0.75;

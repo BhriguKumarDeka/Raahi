@@ -1,7 +1,6 @@
 {
   "version": 2,
   "framework": null,
-  "outputDirectory": ".",
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "functions": {
@@ -12,7 +11,8 @@
   "routes": [
     {
       "src": "/build/(.*)",
-      "dest": "/public/build/$1"
+      "dest": "/public/build/$1",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
     },
     {
       "src": "/assets/(.*)",
@@ -29,11 +29,10 @@
   ],
   "env": {
     "APP_ENV": "production",
-    "APP_DEBUG": "false",
+    "APP_DEBUG": "true",
     "CACHE_DRIVER": "array",
     "SESSION_DRIVER": "cookie",
     "QUEUE_CONNECTION": "sync",
-    "LOG_CHANNEL": "stderr",
-    "DB_DATABASE": "/tmp/database.sqlite"
+    "LOG_CHANNEL": "stderr"
   }
 }

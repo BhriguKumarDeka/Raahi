@@ -1,10 +1,5 @@
 <?php
 
-// Catch ALL errors and display them in the browser response
-// This bypasses Vercel's log truncation entirely
-set_error_handler(function ($severity, $message, $file, $line) {
-    throw new \ErrorException($message, 0, $severity, $file, $line);
-});
 
 try {
     $storageDir = '/tmp/storage';
@@ -21,6 +16,9 @@ try {
     putenv('VIEW_COMPILED_PATH=' . $storageDir . '/framework/views');
     putenv('APP_SERVICES_CACHE=' . '/tmp/services.php');
     putenv('APP_PACKAGES_CACHE=' . '/tmp/packages.php');
+    putenv('APP_CONFIG_CACHE=' . '/tmp/config.php');
+    putenv('APP_ROUTES_CACHE=' . '/tmp/routes.php');
+    putenv('APP_EVENTS_CACHE=' . '/tmp/events.php');
 
     // Forward Vercel requests to the normal Laravel entry point
     require __DIR__ . '/../public/index.php';

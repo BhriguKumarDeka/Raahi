@@ -1,6 +1,7 @@
 {
   "version": 2,
   "framework": null,
+  "outputDirectory": "public",
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "functions": {
@@ -11,19 +12,23 @@
   "routes": [
     {
       "src": "/build/(.*)",
-      "dest": "/public/build/$1"
+      "dest": "/build/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
     },
     {
       "src": "/favicon.(ics|ico|png)",
-      "dest": "/public/favicon.$1"
+      "dest": "/favicon.$1"
     },
     {
       "src": "/robots.txt",
-      "dest": "/public/robots.txt"
+      "dest": "/robots.txt"
     },
     {
       "src": "/footer-illustration.svg",
-      "dest": "/public/footer-illustration.svg"
+      "dest": "/footer-illustration.svg"
     },
     {
       "src": "/(.*)",

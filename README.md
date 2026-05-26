@@ -1,3 +1,5 @@
+![Preview](.github/snapshot/hero-sec.png)
+
 # Raahi: Collaborative Group Travel Planner
 
 Raahi is a modern collaborative web application designed to simplify the logistics of planning group travel. It provides a central workspace where group members can collectively design itineraries, discuss details, vote on ideas, share files, and manage expenses.

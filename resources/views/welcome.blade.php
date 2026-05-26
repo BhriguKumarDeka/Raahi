@@ -1,27 +1,108 @@
-<x-marketing-layout>
-    <x-slot name="title">Raahi - Group Travel Planning & Itinerary Collaboration</x-slot>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
-    <!-- Hero Section-->
-    <section
-        class="relative min-h-[90vh] flex flex-col justify-center pt-24 pb-16 overflow-hidden bg-bg-secondary border-b border-border-light">
-        <div class="absolute inset-0 z-0">
-            <img src="https://images.pexels.com/photos/34244310/pexels-photo-34244310.jpeg/"
-                alt="Lush green forested mountain valley"
-                class="w-full h-full object-fit filter contrast-1.1 brightness-90" />
-            <div class="absolute inset-0 bg-linear-to-t from-bg-secondary/50 via-transparent to-white/50"></div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Raahi - Group Travel Planning & Itinerary Collaboration</title>
+
+    <!-- Fonts (Google Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f4f4f0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e4e4df;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5e605c;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased bg-bg-primary text-text-main selection:bg-brand-neutral selection:text-bg-primary">
+    <div class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+        <div id="landing-nav-shell" class="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 transition-all duration-300">
+            <header id="landing-nav" class="max-w-7xl mx-auto rounded-full border border-transparent bg-transparent transition-all duration-300">
+                <div class="px-6 h-16 flex items-center justify-between">
+                    <a href="/" data-nav-brand class="font-sans-display font-extrabold text-2xl tracking-tight text-white flex items-center space-x-2 text-shadow-lg transition-all duration-300 hover:scale-[1.05]">
+                        <span>Raahi.com</span>
+                    </a>
+
+                    <!-- Nav links -->
+                    <ul class="flex items-center space-x-6">
+                        <li>
+                            <a href="#discover" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
+                                Destinations
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#values" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
+                                About
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#features" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
+                                Features
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Auth Actions -->
+                    <div class="flex items-center space-x-3">
+                        @auth
+                        <a href="{{ route('dashboard') }}" class="px-5 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-bold rounded-full transition-all duration-200 shadow-sm hover:scale-[1.02]">
+                            Dashboard
+                        </a>
+                        @else
+                        <a href="{{ route('login') }}" data-nav-link class="text-xs font-bold uppercase tracking-wider text-white/85 hover:text-white transition-colors duration-200 px-3 py-2">
+                            Sign In
+                        </a>
+                        <a href="{{ route('register') }}" class="px-5 py-2.5 bg-brand-neutral hover:bg-brand-hover text-bg-primary text-xs font-bold rounded-full transition-all duration-200 shadow-sm hover:scale-[1.02]">
+                            Get Started
+                        </a>
+                        @endauth
+                    </div>
+                </div>
+            </header>
         </div>
 
-        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white mt-12">
-            <!-- Immersive Typography: Sans-serif blended with Italic Serif Accent -->
-            <h1
-                class="hero-title text-4xl sm:text-6xl md:text-7xl font-extralight tracking-tight leading-[1.1] max-w-4xl mx-auto text-shadow-md">
-                Plan your next trip <br> with convenience
-            </h1>
-            <p
-                class="hero-desc mt-6 text-sm sm:text-base text-white/80 max-w-xl mx-auto leading-relaxed text-shadow-md font-normal">
-                Collaboratively build day-by-day itineraries, budget tracking, polls and group chat. All in one
-                beautifully unified workspace.
-            </p>
+        <!-- Hero Section-->
+        <section class="relative min-h-[90vh] flex flex-col justify-center pt-24 pb-16 overflow-hidden bg-bg-secondary border-b border-border-light">
+            <div class="absolute inset-0 z-0">
+                <img src="https://images.pexels.com/photos/34244310/pexels-photo-34244310.jpeg/"
+                    alt="Lush green forested mountain valley"
+                    class="w-full h-full object-fit filter contrast-1.1 brightness-90" />
+                <div class="absolute inset-0 bg-linear-to-t from-bg-secondary/50 via-transparent to-white/50"></div>
+            </div>
+
+            <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white mt-4">
+                <h1 class="hero-title text-4xl sm:text-6xl md:text-7xl font-extralight tracking-tight leading-[1.1] max-w-4xl mx-auto text-shadow-md">
+                    Build Your Perfect<br><span>Travel Itinerary</span>
+                </h1>
+                <p class="hero-desc mt-6 text-sm sm:text-base text-white/80 max-w-xl mx-auto leading-relaxed text-shadow-md font-normal">
+                    Collaboratively build day-by-day itineraries, budget tracking, polls and group chat. All in one beautifully unified workspace.
+                </p>
 
             <div class="search-widget mt-12 max-w-2xl mx-auto relative group">
                 <!-- Focus glow background -->
@@ -277,39 +358,35 @@
         </div>
     </section>
 
-    <!-- Numeric Platform Statistics Row (inspired by Snapshot 4) -->
-    <section class="py-16 bg-bg-primary border-b border-border-light">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div class="stat-item">
-                    <p class="text-4xl font-extrabold text-brand-neutral">50+</p>
-                    <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Verified Cozy
-                        Destinations</p>
-                </div>
-                <div class="stat-item">
-                    <p class="text-4xl font-extrabold text-brand-neutral">200+</p>
-                    <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Group Trips Planned
-                    </p>
-                </div>
-                <div class="stat-item">
-                    <p class="text-4xl font-extrabold text-brand-neutral">120,000+</p>
-                    <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Active Co-planners
-                    </p>
-                </div>
-                <div class="stat-item">
-                    <p class="text-4xl font-extrabold text-brand-neutral">$15 Million</p>
-                    <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Expenses Nettted &
-                        Split</p>
+        <!-- Numeric Platform Statistics Row (inspired by Snapshot 4) -->
+        <section class="py-16 bg-bg-primary border-b border-border-light">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div class="stat-item">
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="50" data-suffix="+">0</span></p>
+                        <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Verified Cozy Destinations</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="200" data-suffix="+">0</span></p>
+                        <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Group Trips Planned</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="120000" data-suffix="+">0</span></p>
+                        <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Active Co-planners</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="text-4xl font-extrabold text-brand-neutral"><span class="stat-num" data-target="15" data-prefix="$" data-suffix=" Million">0</span></p>
+                        <p class="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-2">Expenses Nettted & Split</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <!-- Bento Grid Section -->
-    <section id="features" class="py-24 bg-bg-secondary border-t border-b border-border-light">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-text-main text-center mb-16">
-                Everything you need for <br class="hidden sm:inline">perfect group journeys
-            </h2>
+        </section>
+        <!-- Bento Grid Section -->
+        <section id="features" class="py-24 bg-bg-secondary border-t border-b border-border-light">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-text-main text-center mb-16">
+                    Everything you need for <br class="hidden sm:inline">perfect group journeys
+                </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                 <!-- Cell 1: Make a Trip (Spans 2 cols on md) -->
@@ -510,39 +587,30 @@
                         </p>
                     </div>
 
-                    <!-- Custom UI Illustration for Clone Itinerary -->
-                    <div
-                        class="relative mt-6 md:mt-0 w-full md:w-90 h-40 rounded-2xl border border-border-light bg-bg-secondary overflow-hidden p-4 select-none flex flex-col justify-between text-left">
-                        <div>
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-extrabold text-[12px] text-text-main">Spiti Valley Highlands
-                                        Explorer</h4>
-                                    <p class="text-[9px] text-text-muted">Kaza • Tabo • Dhankar Lake</p>
+                        <!-- Custom UI Illustration for Clone Itinerary -->
+                        <div class="relative mt-6 md:mt-0 w-full md:w-90 h-40 rounded-2xl border border-border-light bg-bg-secondary overflow-hidden p-4 select-none flex flex-col justify-between text-left">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-extrabold text-[12px] text-text-main">Spiti Valley Highlands Explorer</h4>
+                                        <p class="text-[9px] text-text-muted">Kaza • Tabo • Dhankar Lake</p>
+                                    </div>
+                                    <span class="text-[8px] bg-brand-neutral text-bg-primary font-bold px-2 py-0.5 rounded-full">★ 4.9</span>
                                 </div>
-                                <span
-                                    class="text-[8px] bg-brand-neutral text-bg-primary font-bold px-2 py-0.5 rounded-full">★
-                                    4.9</span>
+                                <div class="flex gap-2 mt-3">
+                                    <span class="text-[8px] bg-white border border-border-card px-2 py-1 rounded-md text-text-muted flex items-center gap-1"><i class="ph ph-clock"></i> 9 Days</span>
+                                    <span class="text-[8px] bg-white border border-border-card px-2 py-1 rounded-md text-text-muted flex items-center gap-1"><i class="ph ph-shield-check"></i> Expert Guided</span>
+                                </div>
                             </div>
-                            <div class="flex gap-2 mt-3">
-                                <span
-                                    class="text-[8px] bg-white border border-border-card px-2 py-1 rounded-md text-text-muted flex items-center gap-1"><i
-                                        class="ph ph-clock"></i> 9 Days</span>
-                                <span
-                                    class="text-[8px] bg-white border border-border-card px-2 py-1 rounded-md text-text-muted flex items-center gap-1"><i
-                                        class="ph ph-shield-check"></i> Expert Guided</span>
-                            </div>
+                            <button class="w-full bg-brand-neutral hover:bg-brand-hover text-bg-primary font-bold text-[10px] uppercase py-2.5 rounded-xl shadow-xs transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]">
+                                <i class="ph ph-copy-simple text-sm"></i>
+                                <span>Clone Itinerary Template</span>
+                            </button>
                         </div>
-                        <button
-                            class="w-full bg-brand-neutral hover:bg-brand-hover text-bg-primary font-bold text-[10px] uppercase py-2.5 rounded-xl shadow-xs transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]">
-                            <i class="ph ph-copy-simple text-sm"></i>
-                            <span>Clone Itinerary Template</span>
-                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
     <!-- FAQ Section -->
     <section id="faq" class="py-24 bg-bg-primary border-b border-border-light">
@@ -551,91 +619,150 @@
                 Frequently Asked Questions
             </h2>
 
-            <div class="space-y-4 text-left" x-data="{ active: null }">
-                <!-- FAQ 1 -->
-                <div
-                    class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
-                    <button @click="active = (active === 1 ? null : 1)"
-                        class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
-                        <span>What is Raahi?</span>
-                        <i class="ph ph-caret-down text-text-muted transition-transform duration-300"
-                            :class="active === 1 ? 'rotate-180 text-brand-neutral' : ''"></i>
-                    </button>
-                    <div x-show="active === 1" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
-                        Raahi is a collaborative group travel planner designed to bring itineraries, day-by-day maps,
-                        budgets, poll options, and group chat into a single, beautiful workspace. No more messy
-                        spreadsheets or endless WhatsApp threads.
+                <div class="space-y-4 text-left" x-data="{ active: null }">
+                    <!-- FAQ 1 -->
+                    <div class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
+                        <button @click="active = (active === 1 ? null : 1)" class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
+                            <span>What is Raahi?</span>
+                            <i class="ph ph-caret-down text-text-muted transition-transform duration-300" :class="active === 1 ? 'rotate-180 text-brand-neutral' : ''"></i>
+                        </button>
+                        <div x-show="active === 1" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
+                            Raahi is a collaborative group travel planner designed to bring itineraries, day-by-day maps, budgets, poll options, and group chat into a single, beautiful workspace. No more messy spreadsheets or endless WhatsApp threads.
+                        </div>
                     </div>
-                </div>
 
-                <!-- FAQ 2 -->
-                <div
-                    class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
-                    <button @click="active = (active === 2 ? null : 2)"
-                        class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
-                        <span>How does group collaboration work?</span>
-                        <i class="ph ph-caret-down text-text-muted transition-transform duration-300"
-                            :class="active === 2 ? 'rotate-180 text-brand-neutral' : ''"></i>
-                    </button>
-                    <div x-show="active === 2" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
-                        Once you create a trip, you can invite your friends with a custom link. You can assign different
-                        permissions (Admin, Editor, Viewer). Everyone can collaborate in real time to build the
-                        timeline, vote on accommodations, and log expenses.
+                    <!-- FAQ 2 -->
+                    <div class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
+                        <button @click="active = (active === 2 ? null : 2)" class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
+                            <span>How does group collaboration work?</span>
+                            <i class="ph ph-caret-down text-text-muted transition-transform duration-300" :class="active === 2 ? 'rotate-180 text-brand-neutral' : ''"></i>
+                        </button>
+                        <div x-show="active === 2" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
+                            Once you create a trip, you can invite your friends with a custom link. You can assign different permissions (Admin, Editor, Viewer). Everyone can collaborate in real time to build the timeline, vote on accommodations, and log expenses.
+                        </div>
                     </div>
-                </div>
 
-                <!-- FAQ 3 -->
-                <div
-                    class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
-                    <button @click="active = (active === 3 ? null : 3)"
-                        class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
-                        <span>Can we track budgets in different currencies?</span>
-                        <i class="ph ph-caret-down text-text-muted transition-transform duration-300"
-                            :class="active === 3 ? 'rotate-180 text-brand-neutral' : ''"></i>
-                    </button>
-                    <div x-show="active === 3" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
-                        Yes! You can log expenses in any currency (USD, INR, EUR, etc.). Raahi automatically fetches
-                        current conversion rates and computes final balances in your home currency, showing exactly who
-                        owes how much to whom.
+                    <!-- FAQ 3 -->
+                    <div class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
+                        <button @click="active = (active === 3 ? null : 3)" class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
+                            <span>Can we track budgets in different currencies?</span>
+                            <i class="ph ph-caret-down text-text-muted transition-transform duration-300" :class="active === 3 ? 'rotate-180 text-brand-neutral' : ''"></i>
+                        </button>
+                        <div x-show="active === 3" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
+                            Yes! You can log expenses in any currency (USD, INR, EUR, etc.). Raahi automatically fetches current conversion rates and computes final balances in your home currency, showing exactly who owes how much to whom.
+                        </div>
                     </div>
-                </div>
 
-                <!-- FAQ 4 -->
-                <div
-                    class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
-                    <button @click="active = (active === 4 ? null : 4)"
-                        class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
-                        <span>Can I copy or clone an existing itinerary?</span>
-                        <i class="ph ph-caret-down text-text-muted transition-transform duration-300"
-                            :class="active === 4 ? 'rotate-180 text-brand-neutral' : ''"></i>
-                    </button>
-                    <div x-show="active === 4" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
-                        Absolutely! Our "Clone Template" feature lets you browse public itineraries uploaded by
-                        experienced travelers, guides, and creators. With one click, you can copy the full day-by-day
-                        plan into your private group dashboard and customize it.
+                    <!-- FAQ 4 -->
+                    <div class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
+                        <button @click="active = (active === 4 ? null : 4)" class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
+                            <span>Can I copy or clone an existing itinerary?</span>
+                            <i class="ph ph-caret-down text-text-muted transition-transform duration-300" :class="active === 4 ? 'rotate-180 text-brand-neutral' : ''"></i>
+                        </button>
+                        <div x-show="active === 4" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
+                            Absolutely! Our "Clone Template" feature lets you browse public itineraries uploaded by experienced travelers, guides, and creators. With one click, you can copy the full day-by-day plan into your private group dashboard and customize it.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- FAQ 4 -->
-    <div class="border border-border-card rounded-2xl bg-bg-primary overflow-hidden transition duration-200">
-        <button @click="active = (active === 4 ? null : 4)"
-            class="w-full flex justify-between items-center px-6 py-4.5 text-left font-bold text-sm text-text-main focus:outline-none cursor-pointer">
-            <span>Can I copy or clone an existing itinerary?</span>
-            <i class="ph ph-caret-down text-text-muted transition-transform duration-300"
-                :class="active === 4 ? 'rotate-180 text-brand-neutral' : ''"></i>
-        </button>
-        <div x-show="active === 4" x-transition class="px-6 pb-5 text-xs text-text-muted leading-relaxed">
-            Absolutely! Our "Clone Template" feature lets you browse public itineraries uploaded by experienced
-            travelers, guides, and creators. With one click, you can copy the full day-by-day plan into your private
-            group dashboard and customize it.
-        </div>
+        <!-- Premium Structured Footer -->
+        <footer class="bg-brand-neutral text-bg-primary/95 border-t border-brand-hover pt-20 pb-12 relative overflow-hidden">
+            <div class="pointer-events-none absolute inset-x-0 bottom-0">
+                <img src="/build/assets/footer-illustration.svg" alt="footer-illustration" class="w-full max-w-6xl mx-auto opacity-20" aria-hidden="true" />
+            </div>
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
+                <!-- Layer 1: Newsletter -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-b border-white/10">
+                    <div class="max-w-md text-left">
+                        <h4 class="text-xl font-bold text-white mb-2">Get travel inspiration & tips</h4>
+                        <p class="text-xs text-bg-primary/60 leading-relaxed">Subscribe to our newsletter for hand-curated itineraries, local explorer guides, and early platform updates.</p>
+                    </div>
+                    <div class="w-full md:w-auto relative group">
+                        <div class="absolute -inset-0.5 bg-linear-to-r from-emerald-400 to-teal-400 rounded-full blur opacity-0 group-focus-within:opacity-30 transition duration-500"></div>
+                        <form action="#" class="relative flex items-center bg-white/5 border border-white/10 rounded-full p-1 w-full md:w-90">
+                            <input type="email" placeholder="Your email address" class="grow bg-transparent border-0 py-2 pl-4 pr-3 text-xs font-semibold text-white placeholder-white/30 focus:ring-0 focus:outline-none" required />
+                            <button type="submit" class="px-5 py-2 rounded-full bg-bg-primary hover:bg-bg-secondary text-brand-neutral font-bold text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer">
+                                Subscribe
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Layer 2: Main Footer Links -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-8 pt-4 text-left">
+                    <!-- Column 1: Brand Info -->
+                    <div class="col-span-2 space-y-4">
+                        <a href="/" class="font-sans-display font-extrabold italic text-2xl tracking-tight text-white flex items-center space-x-2">
+                            <span>Raahi.in</span>
+                        </a>
+                        <p class="text-xs text-bg-primary/60 leading-relaxed max-w-xs">
+                            Empowering groups to plan, coordinate, and experience travel together. Beautiful, unified workspaces designed with absolute precision.
+                        </p>
+                        <!-- Social Icons -->
+                        <div class="flex items-center space-x-3 pt-2">
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-instagram-logo text-base"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-twitter-logo text-base"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-youtube-logo text-base"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition border border-white/5">
+                                <i class="ph ph-linkedin-logo text-base"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Product -->
+                    <div class="space-y-3">
+                        <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Product</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><a href="#" class="hover:text-white transition">Dynamic Timeline</a></li>
+                            <li><a href="#" class="hover:text-white transition">Budget Ledger</a></li>
+                            <li><a href="#" class="hover:text-white transition">Itinerary Cloner</a></li>
+                            <li><a href="#" class="hover:text-white transition">Collaborative Polls</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Company -->
+                    <div class="space-y-3">
+                        <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Company</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                            <li><a href="#" class="hover:text-white transition">Our Story</a></li>
+                            <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                            <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 4: Resources -->
+                    <div class="space-y-3">
+                        <h5 class="text-[10px] font-extrabold uppercase tracking-widest text-white/50">Resources</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><a href="#" class="hover:text-white transition">Backpacker Blogs</a></li>
+                            <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+                            <li><a href="#" class="hover:text-white transition">Planning Guides</a></li>
+                            <li><a href="#" class="hover:text-white transition">API Access</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Layer 3: Copyright and Legal -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10 text-[11px] text-bg-primary/50 text-left">
+                    <p>&copy; {{ date('Y') }} Raahi.in. Built with absolute precision. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                        <a href="#" class="hover:text-white transition">Terms of Service</a>
+                        <a href="#" class="hover:text-white transition">Cookie Preferences</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
-    </div>
-    </div>
-    </section>
 
     <!-- Custom JS code for Carousel and Typewriter -->
     @push('head')
@@ -678,16 +805,16 @@
                         easing: 'ease-out'
                     });
 
-                    // In-View animations for cards & grids
-                    inView('#values', () => {
-                        animate('#values', {
-                            opacity: [0, 1],
-                            y: [30, 0]
-                        }, {
-                            duration: 0.6,
-                            easing: 'ease-out'
-                        });
+                // In-View animations for cards & grids
+                inView('#values', () => {
+                    animate('#values', {
+                        opacity: [0, 1],
+                        y: [30, 0]
+                    }, {
+                        duration: 0.6,
+                        easing: 'ease-out'
                     });
+                });
 
                     inView('#discover', () => {
                         animate('.grid > div', {
@@ -709,6 +836,41 @@
                             duration: 0.5
                         });
                     });
+                inView('.stat-item', () => {
+                    animate('.stat-item', {
+                        opacity: [0, 1],
+                        scale: [0.95, 1]
+                    }, {
+                        delay: (info) => info * 0.08,
+                        duration: 0.5
+                    });
+
+                    document.querySelectorAll('.stat-num').forEach(el => {
+                        if (el.dataset.animated) return;
+                        el.dataset.animated = "true";
+
+                        const target = parseInt(el.dataset.target, 10);
+                        const prefix = el.dataset.prefix || '';
+                        const suffix = el.dataset.suffix || '';
+                        const duration = 2000;
+                        const startTime = performance.now();
+
+                        const update = (time) => {
+                            const elapsed = time - startTime;
+                            const progress = Math.min(elapsed / duration, 1);
+
+                            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                            const current = Math.floor(easeProgress * target);
+
+                            el.innerHTML = prefix + current.toLocaleString() + suffix;
+
+                            if (progress < 1) {
+                                requestAnimationFrame(update);
+                            }
+                        };
+                        requestAnimationFrame(update);
+                    });
+                });
 
                     // Navbar shifts from transparent hero state to a soft pill after the partner band.
                     const navShell = document.getElementById('landing-nav-shell');

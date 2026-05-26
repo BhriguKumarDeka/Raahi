@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::view('/', 'welcome');
+Route::view('how-it-works', 'how-it-works')->name('how-it-works');
+Route::view('about', 'about')->name('about');
+Route::view('contact', 'contact')->name('contact');
 
 Route::middleware(['auth', 'verified', 'onboarded'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');

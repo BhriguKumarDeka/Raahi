@@ -1,16 +1,25 @@
 {
     "version": 2,
-    "buildCommand": "npm install && npm run build",
-    "builds": [
-        {
-            "src": "api/index.php",
-            "use": "vercel-php@0.9.0"
+    "framework": null,
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.9.0"
         }
-    ],
+    },
     "routes": [
         {
             "src": "/build/(.*)",
             "dest": "/public/build/$1"
+        },
+        {
+            "src": "/assets/(.*)",
+            "dest": "/public/assets/$1"
+        },
+        {
+            "src": "/favicon.(ics|ico|png)",
+            "dest": "/public/favicon.$1"
         },
         {
             "src": "/(.*)",

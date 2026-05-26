@@ -637,7 +637,7 @@
         <!-- Premium Structured Footer -->
         <footer class="bg-brand-neutral text-bg-primary/95 border-t border-brand-hover pt-20 pb-12 relative overflow-hidden">
             <div class="pointer-events-none absolute inset-x-0 bottom-0">
-                <img src="/build/assets/footer-illustration.svg" alt="footer-illustration" class="w-full max-w-6xl mx-auto opacity-20" aria-hidden="true" />
+                <img src="/footer-illustration.svg" alt="footer-illustration" class="w-full max-w-6xl mx-auto opacity-20" aria-hidden="true" />
             </div>
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
                 <!-- Layer 1: Newsletter -->

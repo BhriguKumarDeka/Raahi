@@ -92,7 +92,7 @@
                     <div class="flex md:hidden">
                         <button @click="mobileMenuOpen = !mobileMenuOpen" 
                                 type="button" 
-                                :class="mobileMenuOpen ? '!text-white' : ''"
+                                :class="mobileMenuOpen ? 'text-white!' : ''"
                                 class="text-white hover:text-brand-neutral focus:outline-none p-2 transition-colors duration-200" 
                                 id="hamburger-btn">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-show="!mobileMenuOpen">
@@ -153,7 +153,7 @@
         <!-- Hero Section-->
         <section class="relative min-h-[90vh] flex flex-col justify-center pt-24 pb-16 overflow-hidden bg-bg-secondary border-b border-border-light">
             <div class="absolute inset-0 z-0">
-                <img src="https://images.pexels.com/photos/34244310/pexels-photo-34244310.jpeg/"
+                <img src="/heroImage.jpg"
                     alt="Lush green forested mountain valley"
                     class="w-full h-full object-cover filter contrast-1.1 brightness-90" />
                 <div class="absolute inset-0 bg-linear-to-t from-bg-secondary/50 via-transparent to-white/50"></div>

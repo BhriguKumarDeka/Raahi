@@ -27,16 +27,16 @@
       "dest": "/robots.txt"
     },
     {
+      "src": "/heroImage.jpg",
+      "dest": "/heroImage.jpg"
+    },
+    {
       "src": "/footer-illustration.svg",
       "dest": "/footer-illustration.svg"
     },
     {
       "src": "/(.*)",
       "dest": "/api/index.php"
-    },
-    {
-      "src": "/heroImage.jpg",
-      "dest": "/heroImage.jpg"
     }
   ],
   "env": {

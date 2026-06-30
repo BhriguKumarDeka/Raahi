@@ -33,6 +33,10 @@
     {
       "src": "/(.*)",
       "dest": "/api/index.php"
+    },
+    {
+      "src": "/heroImage.jpg",
+      "dest": "/heroImage.jpg"
     }
   ],
   "env": {
